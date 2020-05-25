@@ -1,5 +1,5 @@
 server:
-  port: 8088
+  port: 80
   servlet:
     context-path: /movie
 
@@ -11,9 +11,12 @@ spring:
     url: jdbc:mysql://localhost:3306/movie_recommend?useUnicode=true&characterEncoding=UTF-8&useSSL=false
     username: root
     password:
-    jackson:
-      time-zone: GMT+8
-      date-format: yyyy-MM-dd HH:mm:ss
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+  resources:
+    static-locations: classpath:/static/
+
 
 #后台打印出sql语句
 logging:

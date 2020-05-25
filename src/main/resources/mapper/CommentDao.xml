@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="cn.hstc.recommend.dao.OperateDao">
+<mapper namespace="cn.hstc.recommend.dao.CommentDao">
 
 	<!-- 可根据自己的需求，是否要使用 -->
-    <resultMap type="cn.hstc.recommend.entity.OperateEntity" id="operateMap">
+    <resultMap type="cn.hstc.recommend.entity.CommentEntity" id="commentMap">
         <result property="id" column="id"/>
         <result property="userId" column="user_id"/>
         <result property="movieId" column="movie_id"/>
-        <result property="score" column="score"/>
-        <result property="college" column="college"/>
-        <result property="will" column="will"/>
+        <result property="comment" column="comment"/>
     </resultMap>
 
 

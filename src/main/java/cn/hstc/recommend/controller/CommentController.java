@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import cn.hstc.recommend.entity.OperateEntity;
-import cn.hstc.recommend.service.OperateService;
+import cn.hstc.recommend.entity.CommentEntity;
+import cn.hstc.recommend.service.CommentService;
 import cn.hstc.recommend.utils.PageUtils;
 import cn.hstc.recommend.utils.Result;
 
@@ -25,17 +25,17 @@ import cn.hstc.recommend.utils.Result;
  * @date 2020-05-25 22:44:02
  */
 @RestController
-@RequestMapping("operate")
-public class OperateController {
+@RequestMapping("comment")
+public class CommentController {
     @Autowired
-    private OperateService operateService;
+    private CommentService commentService;
 
     /**
      * 列表
      */
     @RequestMapping("/listPage")
     public Result list(@RequestParam Map<String, Object> params){
-        PageUtils page = operateService.queryPage(params);
+        PageUtils page = commentService.queryPage(params);
 
         return new Result().ok(page);
     }
@@ -46,17 +46,17 @@ public class OperateController {
      */
     @RequestMapping("/info/{id}")
     public Result info(@PathVariable("id") Integer id){
-        OperateEntity operate = operateService.getById(id);
+        CommentEntity comment = commentService.getById(id);
 
-        return new Result<OperateEntity>().ok(operate);
+        return new Result<CommentEntity>().ok(comment);
     }
 
     /**
      * 保存
      */
     @RequestMapping("/save")
-    public Result save(@RequestBody OperateEntity operate){
-        operateService.save(operate);
+    public Result save(@RequestBody CommentEntity comment){
+        commentService.save(comment);
 
         return new Result().ok("保存成功");
     }
@@ -65,8 +65,8 @@ public class OperateController {
      * 修改
      */
     @RequestMapping("/update")
-    public Result update(@RequestBody OperateEntity operate){
-        operateService.updateById(operate);
+    public Result update(@RequestBody CommentEntity comment){
+        commentService.updateById(comment);
         
         return new Result().ok("修改成功");
     }
@@ -76,7 +76,7 @@ public class OperateController {
      */
     @RequestMapping("/delete")
     public Result delete(@RequestBody Integer[] ids){
-        operateService.removeByIds(Arrays.asList(ids));
+        commentService.removeByIds(Arrays.asList(ids));
 
         return new Result().ok("删除成功");
     }

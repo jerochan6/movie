@@ -30,38 +30,51 @@ public class MovieServiceImpl extends ServiceImpl<MovieDao, MovieEntity> impleme
                 new QueryWrapper<MovieEntity>()
         );
         List<MovieEntity> movieEntities = page.getRecords();
-        insertTypeName(movieEntities);
+        insertColumnName(movieEntities);
         return new PageUtils(page);
     }
 
     /**
      * @Author zehao
-     * @Description 插入类型名
+     * @Description 插入标签id转换的标签名
      * @Date 20:41 2020/5/15/015
      * @Param [movieEntities] 需要插入类型名的数组
      * @return void
      **/
-    private void insertTypeName(List<MovieEntity> movieEntities){
+    private void insertColumnName(List<MovieEntity> movieEntities){
 
         for(MovieEntity movieEntity: movieEntities){
             String type = movieEntity.getType();
+            String language = movieEntity.getLanguage();
             if(type != null &&  !type.trim().isEmpty()){
-                String[] typeIds = type.split(",");
-                StringBuffer tagName = new StringBuffer();
-                for(String typeId : typeIds){
-                    TagEntity tagEntity = tagService.getById(typeId);
-                    if (tagEntity != null){
-                        tagName.append(tagEntity.getTagName()+",");
-                    }
-
-
-                }
-                if(tagName.length() != 0){
-                    tagName.deleteCharAt(tagName.toString().length() - 1);
-                }
-                movieEntity.setTypeName(tagName.toString());
+                
+                movieEntity.setTypeName(getTagNames(type));
+            }
+            if(language != null &&  !language.trim().isEmpty()){
+                movieEntity.setLanguageName(getTagNames(language));
             }
         }
 
+    }
+    /**
+     * @Author zehao
+     * @Description //TODO 根据标签id查询标签名
+     * @Date 15:54 2020/5/17/017
+     * @Param [ids]
+     * @return java.lang.String
+     **/
+    private String getTagNames(String ids){
+        String[] tagIds = ids.split(",");
+        StringBuffer tagNames= new StringBuffer();
+        for(String tagId : tagIds){
+            TagEntity tagEntity = tagService.getById(tagId);
+            if (tagEntity != null){
+                tagNames.append(tagEntity.getTagName()+",");
+            }
+        }
+        if(tagNames.length() != 0){
+            tagNames.deleteCharAt(tagNames.toString().length() - 1);
+        }
+        return tagNames.toString();
     }
 }

@@ -1,8 +1,13 @@
 package cn.hstc.recommend.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.UUID;
 
+import cn.hstc.recommend.utils.UploadUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,7 +19,10 @@ import cn.hstc.recommend.entity.MovieEntity;
 import cn.hstc.recommend.service.MovieService;
 import cn.hstc.recommend.utils.PageUtils;
 import cn.hstc.recommend.utils.Result;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -68,6 +76,9 @@ public class MovieController {
         if(movie.getType().isEmpty()){
             movie.setType(" ");
         }
+        if(movie.getLanguage().isEmpty()){
+            movie.setType(" ");
+        }
         movieService.updateById(movie);
         
         return new Result().ok("修改成功");
@@ -83,4 +94,36 @@ public class MovieController {
         return new Result().ok("删除成功");
     }
 
+    /**
+     * @Author zehao
+     * @Description //TODO 上传图片接口
+     * @Date 10:26 2020/5/25/025
+     * @Param imageFile
+     * @return path
+     **/
+    @RequestMapping(value = "/imgUpload")
+    public Result imgUpload(@RequestBody MultipartFile file,HttpServletRequest request){
+
+        String parentDir = request.getServletContext().getRealPath("/");
+        if (file.isEmpty()) {
+           return new Result().error("上传图片为空");
+        }
+        // 获取文件名
+        String fileName = file.getOriginalFilename();
+        // 上传后的路径
+        File filePath = UploadUtils.getImgDirFile(parentDir);
+        // 生成新文件名
+        fileName = UploadUtils.getUUIDName(fileName);
+        File dest = new File(filePath + "/" + fileName);
+        if (!dest.getParentFile().exists()) {
+            dest.getParentFile().mkdirs();
+        }
+        try {
+            file.transferTo(dest);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println(filePath + "/" + fileName);
+        return new Result().ok(UploadUtils.IMG_PATH_PREFIX+"/"+fileName);
+    }
 }

@@ -1,6 +1,6 @@
 package cn.hstc.recommend.dao;
 
-import cn.hstc.recommend.entity.OperateEntity;
+import cn.hstc.recommend.entity.CommentEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -12,6 +12,6 @@ import org.apache.ibatis.annotations.Mapper;
  * @date 2020-05-25 22:44:02
  */
 @Mapper
-public interface OperateDao extends BaseMapper<OperateEntity> {
+public interface CommentDao extends BaseMapper<CommentEntity> {
 	
 }

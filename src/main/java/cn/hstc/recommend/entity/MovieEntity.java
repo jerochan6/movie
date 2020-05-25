@@ -3,6 +3,8 @@ package cn.hstc.recommend.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -30,6 +32,8 @@ public class MovieEntity implements Serializable {
 	/**
 	 * 电影的上映时间
 	 */
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date releaseTime;
 	/**
 	 * 导演名
@@ -54,7 +58,7 @@ public class MovieEntity implements Serializable {
 	/**
 	 * 语言
 	 */
-	private Integer language;
+	private String language;
 	/**
 	 * 电影时长
 	 */
@@ -74,6 +78,8 @@ public class MovieEntity implements Serializable {
 	/**
 	 * 创建时间
 	 */
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date createTime;
 	/**
 	 * 电影
@@ -83,6 +89,9 @@ public class MovieEntity implements Serializable {
 	//用于存放type中id的值
 	@TableField(exist = false)
 	private String typeName;
+	//用于存放language中id的值
+	@TableField(exist = false)
+	private String languageName;
 
 	public String getTypeName() {
 		return typeName;
@@ -156,11 +165,11 @@ public class MovieEntity implements Serializable {
 		this.sourceCountry = sourceCountry;
 	}
 
-	public Integer getLanguage() {
+	public String getLanguage() {
 		return language;
 	}
 
-	public void setLanguage(Integer language) {
+	public void setLanguage(String language) {
 		this.language = language;
 	}
 
@@ -212,6 +221,15 @@ public class MovieEntity implements Serializable {
 		this.movieName = movieName;
 	}
 
+	public String getLanguageName() {
+		return languageName;
+	}
+
+
+
+	public void setLanguageName(String languageName) {
+		this.languageName = languageName;
+	}
 	@Override
 	public String toString() {
 		return "MovieEntity{" +
@@ -223,7 +241,7 @@ public class MovieEntity implements Serializable {
 				", actor='" + actor + '\'' +
 				", type='" + type + '\'' +
 				", sourceCountry=" + sourceCountry +
-				", language=" + language +
+				", language='" + language + '\'' +
 				", movieLength=" + movieLength +
 				", movieLink='" + movieLink + '\'' +
 				", movieImage='" + movieImage + '\'' +
@@ -231,6 +249,7 @@ public class MovieEntity implements Serializable {
 				", createTime=" + createTime +
 				", movieName='" + movieName + '\'' +
 				", typeName='" + typeName + '\'' +
+				", languageName='" + languageName + '\'' +
 				'}';
 	}
 }

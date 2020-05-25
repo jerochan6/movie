@@ -13,35 +13,27 @@ import java.util.Date;
  * @email 570057386@qq.com
  * @date 2020-05-25 22:44:02
  */
-@TableName("operate")
-public class OperateEntity implements Serializable {
+@TableName("comment")
+public class CommentEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * 操作表id
+	 * 
 	 */
 	@TableId
 	private Integer id;
 	/**
-	 * 用户id
+	 * 
 	 */
 	private Integer userId;
 	/**
-	 * 电影id
+	 * 
 	 */
 	private Integer movieId;
 	/**
-	 * 分数
+	 * 
 	 */
-	private Double score;
-	/**
-	 * 收藏（0：未收藏，1：已收藏）
-	 */
-	private Integer college;
-	/**
-	 * 想看（0：不想看，1：想看）
-	 */
-	private Integer will;
+	private String comment;
 
 	public Integer getId() {
 		return id;
@@ -67,39 +59,21 @@ public class OperateEntity implements Serializable {
 		this.movieId = movieId;
 	}
 
-	public Double getScore() {
-		return score;
+	public String getComment() {
+		return comment;
 	}
 
-	public void setScore(Double score) {
-		this.score = score;
-	}
-
-	public Integer getCollege() {
-		return college;
-	}
-
-	public void setCollege(Integer college) {
-		this.college = college;
-	}
-
-	public Integer getWill() {
-		return will;
-	}
-
-	public void setWill(Integer will) {
-		this.will = will;
+	public void setComment(String comment) {
+		this.comment = comment;
 	}
 
 	@Override
 	public String toString() {
-		return "OperateEntity{" +
+		return "CommentEntity{" +
 				"id=" + id +
 				", userId=" + userId +
 				", movieId=" + movieId +
-				", score=" + score +
-				", college=" + college +
-				", will=" + will +
+				", comment='" + comment + '\'' +
 				'}';
 	}
 }

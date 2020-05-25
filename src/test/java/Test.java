@@ -1,3 +1,5 @@
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,16 +12,11 @@ import java.util.List;
  **/
 public class Test {
 
-    public static void main(String[] args){
+    public static void main(String[] args) throws IOException {
+        File file = new File("/");
+        String fileDirPath = new String(file.getCanonicalPath() +"/src/main/resources/" );
 
-        List<Integer> list = new ArrayList<>();
-        list.add(2);
-        Test t = new Test();
-        System.out.println(list.size());
-        t.insert(list);
-        System.out.println(list.size());
-    }
-    private void insert(List<Integer> list){
-        list.add(1);
+        File fileDir = new File(fileDirPath);
+        System.out.println(fileDir.getAbsolutePath());
     }
 }
