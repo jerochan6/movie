@@ -12,4 +12,15 @@
     </resultMap>
 
 
+    <select id="selectListPage" resultMap="commentMap">
+        select comment.id,comment.user_id,comment.movie_id,comment.comment,user.user_name as user_name,movie.movie_name as movie_name
+        from comment
+        left join user on user.id = comment.user_id
+        left join movie on movie.id = comment.movie_id
+        <where>
+            ${ew.sqlSegment}
+        </where>
+        limit #{offset},#{size}
+    </select>
+
 </mapper>

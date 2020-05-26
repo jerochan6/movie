@@ -88,8 +88,10 @@ public class MovieController {
      * 删除
      */
     @RequestMapping("/delete")
-    public Result delete(@RequestBody Integer[] ids){
-        movieService.removeByIds(Arrays.asList(ids));
+    public Result delete(@RequestBody Integer[] ids,HttpServletRequest request){
+        //获取当前访问的路径
+        String parentDir = request.getServletContext().getRealPath("/");
+        movieService.removeByIds(Arrays.asList(ids),parentDir);
 
         return new Result().ok("删除成功");
     }

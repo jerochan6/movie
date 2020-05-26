@@ -13,5 +13,15 @@
         <result property="will" column="will"/>
     </resultMap>
 
-
+    <select id="selectListPage" resultMap="operateMap">
+        select operate.id,operate.user_id,operate.movie_id,operate.score,
+        operate.college,operate.will,user.user_name as user_name,movie.movie_name as movie_name
+        from operate
+        left join user on user.id = operate.user_id
+        left join movie on movie.id = operate.movie_id
+        <where>
+            ${ew.sqlSegment}
+        </where>
+        limit #{offset},#{size}
+    </select>
 </mapper>

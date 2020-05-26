@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import cn.hstc.recommend.utils.PageUtils;
 import cn.hstc.recommend.entity.MovieEntity;
 
+import java.io.Serializable;
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -16,5 +18,8 @@ import java.util.Map;
 public interface MovieService extends IService<MovieEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+
+    boolean removeByIds(Collection<? extends Serializable> idList,String path);
 }
 

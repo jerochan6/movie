@@ -1,5 +1,6 @@
 package cn.hstc.recommend.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
@@ -35,6 +36,12 @@ public class CommentEntity implements Serializable {
 	 */
 	private String comment;
 
+	@TableField(exist = false)
+	private String userName;
+
+	@TableField(exist = false)
+	private String movieName;
+
 	public Integer getId() {
 		return id;
 	}
@@ -67,6 +74,22 @@ public class CommentEntity implements Serializable {
 		this.comment = comment;
 	}
 
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String getMovieName() {
+		return movieName;
+	}
+
+	public void setMovieName(String movieName) {
+		this.movieName = movieName;
+	}
+
 	@Override
 	public String toString() {
 		return "CommentEntity{" +
@@ -74,6 +97,8 @@ public class CommentEntity implements Serializable {
 				", userId=" + userId +
 				", movieId=" + movieId +
 				", comment='" + comment + '\'' +
+				", userName='" + userName + '\'' +
+				", movieName='" + movieName + '\'' +
 				'}';
 	}
 }

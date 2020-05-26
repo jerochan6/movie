@@ -2,9 +2,14 @@ package cn.hstc.recommend.service.impl;
 
 import cn.hstc.recommend.entity.TagEntity;
 import cn.hstc.recommend.service.TagService;
+import cn.hstc.recommend.utils.UploadUtils;
+import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -76,5 +81,41 @@ public class MovieServiceImpl extends ServiceImpl<MovieDao, MovieEntity> impleme
             tagNames.deleteCharAt(tagNames.toString().length() - 1);
         }
         return tagNames.toString();
+    }
+    /**
+     * @Author zehao
+     * @Description //TODO 根据多个电影id删除电影
+     * @Date 9:49 2020/5/26/026
+     * @Param [idList]
+     * @return boolean
+     **/
+    @Override
+    public boolean removeByIds(Collection<? extends Serializable> idList,String path){
+        //根据电影id获得电影
+        List<MovieEntity> list = this.baseMapper.selectBatchIds(idList);
+        //遍历电影集合，如果电影的图片不为空，则图片在本地中物理删除
+        for (MovieEntity movie:
+             list) {
+
+            if(null != movie.getMovieImage()){
+                // 上传后的路径
+                String dirPath = path + UploadUtils.STATIC_PATH;
+                //根据图片存储路径获取图片
+                File image = new File(dirPath  + movie.getMovieImage());
+
+                //如果图片存在，则删除
+                if(image.exists()){
+                    try{
+                        image.delete();
+                    }catch (Exception e){
+                        e.printStackTrace();
+                        return false;
+                    }
+                }
+            }
+        }
+
+        //删除电影记录
+        return SqlHelper.delBool(this.baseMapper.deleteBatchIds(idList));
     }
 }
