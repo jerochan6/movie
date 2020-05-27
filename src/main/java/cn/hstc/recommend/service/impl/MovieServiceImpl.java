@@ -118,4 +118,16 @@ public class MovieServiceImpl extends ServiceImpl<MovieDao, MovieEntity> impleme
         //删除电影记录
         return SqlHelper.delBool(this.baseMapper.deleteBatchIds(idList));
     }
+    /**
+     * @Author zehao
+     * @Description //TODO 保存电影信息
+     * @Date 21:04 2020/5/26/026
+     * @Param [movieEntity]
+     * @return boolean
+     **/
+    @Override
+    public boolean save(MovieEntity movieEntity){
+
+        return this.retBool(this.baseMapper.insert(movieEntity));
+    }
 }

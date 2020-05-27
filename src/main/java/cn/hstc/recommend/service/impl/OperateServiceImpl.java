@@ -29,5 +29,20 @@ public class OperateServiceImpl extends ServiceImpl<OperateDao, OperateEntity> i
         page.setRecords(operateDao.selectListPage(page.offset(),page.getSize(),wrapper));
         return new PageUtils(page);
     }
+    /**
+     * @Author zehao
+     * @Description //TODO 保存用户操作信息
+     * @Date 21:09 2020/5/26/026
+     * @Param [operateEntity]
+     * @return boolean
+     **/
+    @Override
+    public boolean save(OperateEntity operateEntity){
+        //获取用户操作，如果有评分，则计入电影总评内
+        if(null != operateEntity.getScore()){
+            //查询总共多少用户对此电影进行评分
 
+        }
+        return this.retBool(this.baseMapper.insert(operateEntity));
+    }
 }

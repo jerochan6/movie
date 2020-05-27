@@ -66,6 +66,7 @@ public class OperateController {
      */
     @RequestMapping("/update")
     public Result update(@RequestBody OperateEntity operate){
+
         operateService.updateById(operate);
         
         return new Result().ok("修改成功");
