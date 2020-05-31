@@ -6,6 +6,7 @@ import java.util.Map;
 import cn.hstc.recommend.interceptor.PassToken;
 import cn.hstc.recommend.interceptor.UserAdminToken;
 import cn.hstc.recommend.interceptor.UserLoginToken;
+import cn.hstc.recommend.utils.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,6 +40,7 @@ public class UserController {
     @UserAdminToken
     @RequestMapping("/listPage")
     public Result listPage(@RequestParam Map<String, Object> params){
+
         PageUtils page = userService.queryPage(params);
         return new Result().ok(page);
     }
@@ -50,6 +52,11 @@ public class UserController {
     @UserLoginToken
     @RequestMapping("/info/{id}")
     public Result info(@PathVariable("id") Integer id){
+        //用户只可以查看自己的信息，管理员可以查看所有用户的信息
+        if(Constant.currentId != Constant.SUPER_ADMIN){
+            UserEntity user = userService.getById(Constant.currentId);
+            return new Result<UserEntity>().ok(user);
+        }
         UserEntity user = userService.getById(id);
         return new Result<UserEntity>().ok(user);
     }
@@ -91,16 +98,16 @@ public class UserController {
      */
     @PassToken
     @RequestMapping("/login")
-    public Result login(@RequestBody UserEntity user){
-        return  userService.loginValidate(user);
+    public Result login(@RequestParam String userName,String password){
+        return  userService.loginValidate(userName,password);
     }
 
-    /**
-     * 验证用户是否登录
-     */
-    @UserLoginToken
-    @RequestMapping("/isLogin")
-    public boolean isLogin(){
-        return  true;
-    }
+//    /**
+//     * 验证用户是否登录
+//     */
+//    @UserLoginToken
+//    @RequestMapping("/isLogin")
+//    public boolean isLogin(){
+//        return  true;
+//    }
 }

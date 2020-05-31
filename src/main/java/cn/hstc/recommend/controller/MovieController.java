@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import cn.hstc.recommend.interceptor.PassToken;
 import cn.hstc.recommend.interceptor.UserAdminToken;
+import cn.hstc.recommend.utils.Constant;
 import cn.hstc.recommend.utils.UploadUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -46,6 +47,7 @@ public class MovieController {
     @PassToken
     @RequestMapping("/listPage")
     public Result listPage(@RequestParam Map<String, Object> params){
+
         PageUtils page = movieService.queryPage(params);
 
         return new Result().ok(page);

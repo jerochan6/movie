@@ -39,10 +39,12 @@ public class TokenHelp {
             } catch (JWTDecodeException j) {
                 throw new RRException("401");
             }
+        //改变当前登录Id
+        Constant.currentId = Integer.parseInt(userId);
             UserEntity user = userService.getById(userId);
             //验证是否是管理员账号
             if(isAdmin){
-                if(!user.getUserName().equals(Constant.SUPER_ADMIN_NAME)){
+                if(Integer.parseInt(userId) != Constant.SUPER_ADMIN){
                     throw new RRException("该操作需要有管理员权限");
                 }
             }

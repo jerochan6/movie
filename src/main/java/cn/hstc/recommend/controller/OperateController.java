@@ -47,23 +47,26 @@ public class OperateController {
     /**
      * 信息
      */
+
     @RequestMapping("/info/{id}")
     public Result info(@PathVariable("id") Integer id){
         OperateEntity operate = operateService.getById(id);
-
+        if(operate == null){
+            operate = new OperateEntity();
+        }
         return new Result<OperateEntity>().ok(operate);
     }
 
-    /**
-     * 保存
-     */
-    @UserLoginToken
-    @RequestMapping("/save")
-    public Result save(@RequestBody OperateEntity operate){
-        operateService.save(operate);
-
-        return new Result().ok("保存成功");
-    }
+//    /**
+//     * 保存
+//     */
+//    @UserLoginToken
+//    @RequestMapping("/save")
+//    public Result save(@RequestBody OperateEntity operate){
+//        operateService.save(operate);
+//
+//        return new Result().ok("保存成功");
+//    }
 
     /**
      * 修改

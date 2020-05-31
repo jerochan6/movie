@@ -17,6 +17,7 @@ public interface OperateService extends IService<OperateEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
 
-    boolean save(OperateEntity operateEntity);
+//    boolean save(OperateEntity operateEntity);
+    boolean updateById(OperateEntity operateEntity);
 }
 

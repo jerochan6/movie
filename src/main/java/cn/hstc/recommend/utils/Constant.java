@@ -16,6 +16,8 @@ import java.util.LinkedHashMap;
  * @author Zero.
  */
 public class Constant {
+    /** 当前登录的用户Id **/
+    public static Integer currentId;
     /** 超级管理员ID */
     public static final int SUPER_ADMIN = 1;
     /** 超级管理员账号名 */
@@ -106,6 +108,7 @@ public class Constant {
             return value;
         }
     }
+
 
 
     /**

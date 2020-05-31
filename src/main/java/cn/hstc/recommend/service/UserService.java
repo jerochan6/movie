@@ -20,7 +20,7 @@ public interface UserService extends IService<UserEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
 
-    Result loginValidate(UserEntity user);
+    Result loginValidate(String userName,String password);
 
 //   String getToken(UserEntity user);
 }

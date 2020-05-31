@@ -3,6 +3,8 @@ package cn.hstc.recommend.controller;
 import java.util.Arrays;
 import java.util.Map;
 
+import cn.hstc.recommend.interceptor.UserLoginToken;
+import cn.hstc.recommend.utils.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -54,8 +56,13 @@ public class CommentController {
     /**
      * 保存
      */
+    @UserLoginToken
     @RequestMapping("/save")
     public Result save(@RequestBody CommentEntity comment){
+        //如果不是管理员账号，则用户只能保存自己的评论
+        if(Constant.currentId != Constant.SUPER_ADMIN){
+            comment.setUserId(Constant.currentId);
+        }
         commentService.save(comment);
 
         return new Result().ok("保存成功");
@@ -64,8 +71,13 @@ public class CommentController {
     /**
      * 修改
      */
+    @UserLoginToken
     @RequestMapping("/update")
     public Result update(@RequestBody CommentEntity comment){
+        //如果不是管理员账号，则用户只能修改自己的评论
+        if(Constant.currentId != Constant.SUPER_ADMIN){
+            comment.setUserId(Constant.currentId);
+        }
         commentService.updateById(comment);
         
         return new Result().ok("修改成功");
@@ -74,6 +86,7 @@ public class CommentController {
     /**
      * 删除
      */
+    @UserLoginToken
     @RequestMapping("/delete")
     public Result delete(@RequestBody Integer[] ids){
         commentService.removeByIds(Arrays.asList(ids));

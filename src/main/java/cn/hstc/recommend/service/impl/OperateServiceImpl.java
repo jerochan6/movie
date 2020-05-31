@@ -1,5 +1,7 @@
 package cn.hstc.recommend.service.impl;
 
+import cn.hstc.recommend.utils.Constant;
+import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.Map;
@@ -31,18 +33,22 @@ public class OperateServiceImpl extends ServiceImpl<OperateDao, OperateEntity> i
     }
     /**
      * @Author zehao
-     * @Description //TODO 保存用户操作信息
+     * @Description //TODO 修改用户操作信息
      * @Date 21:09 2020/5/26/026
      * @Param [operateEntity]
      * @return boolean
      **/
     @Override
-    public boolean save(OperateEntity operateEntity){
-        //获取用户操作，如果有评分，则计入电影总评内
-        if(null != operateEntity.getScore()){
-            //查询总共多少用户对此电影进行评分
-
+    public boolean updateById(OperateEntity operateEntity){
+        operateEntity.setUserId(Constant.currentId);
+        QueryWrapper<OperateEntity> wrapper = new QueryWrapper<OperateEntity>()
+                .eq("user_id",operateEntity.getUserId())
+                .eq("movie_id",operateEntity.getMovieId());
+        OperateEntity operate = this.baseMapper.selectOne(wrapper);
+        if(operate == null){
+            return SqlHelper.retBool(this.baseMapper.insert(operateEntity));
         }
-        return this.retBool(this.baseMapper.insert(operateEntity));
+        return  SqlHelper.retBool(this.baseMapper.updateById(operateEntity));
     }
+
 }
