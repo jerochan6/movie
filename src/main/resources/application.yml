@@ -11,6 +11,13 @@ spring:
     url: jdbc:mysql://localhost:3306/movie_recommend?useUnicode=true&characterEncoding=UTF-8&useSSL=false
     username: root
     password:
+    max-active: 100
+    min-idle: 10
+    max-wait: 60000
+    pool-prepared-statements: true
+    max-pool-prepared-statement-per-connection-size: 20
+    time-between-eviction-runs-millis: 60000
+    min-evictable-idle-time-millis: 300000
   jackson:
     time-zone: GMT+8
     date-format: yyyy-MM-dd HH:mm:ss

@@ -3,6 +3,8 @@ package cn.hstc.recommend.controller;
 import java.util.Arrays;
 import java.util.Map;
 
+import cn.hstc.recommend.interceptor.UserAdminToken;
+import cn.hstc.recommend.interceptor.UserLoginToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,8 +35,9 @@ public class OperateController {
     /**
      * 列表
      */
+
     @RequestMapping("/listPage")
-    public Result list(@RequestParam Map<String, Object> params){
+    public Result listPage(@RequestParam Map<String, Object> params){
         PageUtils page = operateService.queryPage(params);
 
         return new Result().ok(page);
@@ -54,6 +57,7 @@ public class OperateController {
     /**
      * 保存
      */
+    @UserLoginToken
     @RequestMapping("/save")
     public Result save(@RequestBody OperateEntity operate){
         operateService.save(operate);
@@ -64,6 +68,7 @@ public class OperateController {
     /**
      * 修改
      */
+    @UserLoginToken
     @RequestMapping("/update")
     public Result update(@RequestBody OperateEntity operate){
 
@@ -75,6 +80,7 @@ public class OperateController {
     /**
      * 删除
      */
+    @UserLoginToken
     @RequestMapping("/delete")
     public Result delete(@RequestBody Integer[] ids){
         operateService.removeByIds(Arrays.asList(ids));

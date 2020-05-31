@@ -13,11 +13,13 @@ import java.util.LinkedHashMap;
 /**
  * 常量
  *
- * @author tengen
+ * @author Zero.
  */
 public class Constant {
     /** 超级管理员ID */
     public static final int SUPER_ADMIN = 1;
+    /** 超级管理员账号名 */
+    public static final String SUPER_ADMIN_NAME = "admin";
     /** 数据权限过滤 */
     public static final String SQL_FILTER = "sql_filter";
     /**

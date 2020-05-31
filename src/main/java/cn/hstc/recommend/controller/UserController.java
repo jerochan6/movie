@@ -3,6 +3,9 @@ package cn.hstc.recommend.controller;
 import java.util.Arrays;
 import java.util.Map;
 
+import cn.hstc.recommend.interceptor.PassToken;
+import cn.hstc.recommend.interceptor.UserAdminToken;
+import cn.hstc.recommend.interceptor.UserLoginToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,8 +34,9 @@ public class UserController {
     private UserService userService;
 
     /**
-     * 列表
+     * 用户列表,需要管理员登录后查看
      */
+    @UserAdminToken
     @RequestMapping("/listPage")
     public Result listPage(@RequestParam Map<String, Object> params){
         PageUtils page = userService.queryPage(params);
@@ -41,8 +45,9 @@ public class UserController {
 
 
     /**
-     * 信息
+     * 信息，需要用户登录后查看
      */
+    @UserLoginToken
     @RequestMapping("/info/{id}")
     public Result info(@PathVariable("id") Integer id){
         UserEntity user = userService.getById(id);
@@ -62,6 +67,7 @@ public class UserController {
     /**
      * 修改
      */
+    @UserLoginToken
     @RequestMapping("/update")
     public Result update(@RequestBody UserEntity user){
         userService.updateById(user);
@@ -72,6 +78,7 @@ public class UserController {
     /**
      * 删除
      */
+    @UserAdminToken
     @RequestMapping("/delete")
     public Result delete(@RequestBody Integer[] ids){
         userService.removeByIds(Arrays.asList(ids));
@@ -79,4 +86,21 @@ public class UserController {
         return new Result().ok("删除成功");
     }
 
+    /**
+     * 登录
+     */
+    @PassToken
+    @RequestMapping("/login")
+    public Result login(@RequestBody UserEntity user){
+        return  userService.loginValidate(user);
+    }
+
+    /**
+     * 验证用户是否登录
+     */
+    @UserLoginToken
+    @RequestMapping("/isLogin")
+    public boolean isLogin(){
+        return  true;
+    }
 }

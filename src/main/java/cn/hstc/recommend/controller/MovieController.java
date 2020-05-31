@@ -7,6 +7,8 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
 
+import cn.hstc.recommend.interceptor.PassToken;
+import cn.hstc.recommend.interceptor.UserAdminToken;
 import cn.hstc.recommend.utils.UploadUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,6 +43,7 @@ public class MovieController {
     /**
      * 列表(页面)
      */
+    @PassToken
     @RequestMapping("/listPage")
     public Result listPage(@RequestParam Map<String, Object> params){
         PageUtils page = movieService.queryPage(params);
@@ -51,6 +54,7 @@ public class MovieController {
     /**
      * 信息
      */
+    @PassToken
     @RequestMapping("/info/{id}")
     public Result info(@PathVariable("id") Integer id){
         MovieEntity movie = movieService.getById(id);
@@ -61,6 +65,7 @@ public class MovieController {
     /**
      * 保存
      */
+    @UserAdminToken
     @RequestMapping("/save")
     public Result save(@RequestBody MovieEntity movie){
         movieService.save(movie);
@@ -71,6 +76,7 @@ public class MovieController {
     /**
      * 修改
      */
+    @UserAdminToken
     @RequestMapping("/update")
     public Result update(@RequestBody MovieEntity movie){
         if(movie.getType().isEmpty()){
@@ -87,6 +93,7 @@ public class MovieController {
     /**
      * 删除
      */
+    @UserAdminToken
     @RequestMapping("/delete")
     public Result delete(@RequestBody Integer[] ids,HttpServletRequest request){
         //获取当前访问的路径
