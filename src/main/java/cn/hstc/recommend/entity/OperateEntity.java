@@ -44,6 +44,8 @@ public class OperateEntity implements Serializable {
 	 */
 	private Integer will;
 
+	private Integer watched;
+
 	@TableField(exist = false)
 	private String userName;
 
@@ -67,6 +69,14 @@ public class OperateEntity implements Serializable {
 
 	public Integer getMovieId() {
 		return movieId;
+	}
+
+	public Integer getWatched() {
+		return watched;
+	}
+
+	public void setWatched(Integer watched) {
+		this.watched = watched;
 	}
 
 	public String getUserName() {
@@ -122,6 +132,7 @@ public class OperateEntity implements Serializable {
 				", score=" + score +
 				", college=" + college +
 				", will=" + will +
+				", watched=" + watched +
 				", userName='" + userName + '\'' +
 				", movieName='" + movieName + '\'' +
 				'}';

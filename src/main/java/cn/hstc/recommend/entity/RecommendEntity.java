@@ -63,4 +63,25 @@ public class RecommendEntity implements Serializable {
 				", movieId=" + movieId +
 				'}';
 	}
+
+	//根据id重写equals和hashCode方法
+	@Override
+	public boolean equals(Object o) {
+		if(this == o){
+			return true;
+		}
+		if(o == null || getClass() != o.getClass()){
+			return false;
+		}
+
+		RecommendEntity recommendEntity = (RecommendEntity) o;
+
+		return movieId != null ? movieId.equals(recommendEntity.movieId) : recommendEntity.movieId == null;
+	}
+
+	@Override
+	public int hashCode() {
+		return movieId != null ? movieId.hashCode() : 0;
+	}
+
 }

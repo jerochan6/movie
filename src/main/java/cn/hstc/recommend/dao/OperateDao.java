@@ -18,4 +18,6 @@ import java.util.List;
 @Mapper
 public interface OperateDao extends BaseMapper<OperateEntity> {
     List<OperateEntity> selectListPage(@Param("offset") long offset, @Param("size") long size, @Param("ew") Wrapper wrapper);
+
+    Double selectScoreByMovie(@Param("movieId")Integer movieId);
 }

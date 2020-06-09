@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -29,14 +30,23 @@ public class MovieServiceImpl extends ServiceImpl<MovieDao, MovieEntity> impleme
     private TagService tagService;
 
     @Override
-    public PageUtils queryPage(Map<String, Object> params) {
+    public PageUtils queryPage(Map<String, Object> params,QueryWrapper<MovieEntity> wrapper) {
         IPage<MovieEntity> page = this.page(
                 new Query<MovieEntity>().getPage(params),
-                new QueryWrapper<MovieEntity>()
+                wrapper
         );
         List<MovieEntity> movieEntities = page.getRecords();
         insertColumnName(movieEntities);
         return new PageUtils(page);
+    }
+
+    @Override
+    public MovieEntity getById(Integer id) {
+        List<MovieEntity> movieEntities = new ArrayList<>();
+        MovieEntity movieEntity = this.baseMapper.selectById(id);
+        movieEntities.add(movieEntity);
+        insertColumnName(movieEntities);
+        return movieEntities.get(0);
     }
 
     /**
@@ -49,14 +59,15 @@ public class MovieServiceImpl extends ServiceImpl<MovieDao, MovieEntity> impleme
     private void insertColumnName(List<MovieEntity> movieEntities){
 
         for(MovieEntity movieEntity: movieEntities){
-            String type = movieEntity.getType();
-            String language = movieEntity.getLanguage();
-            if(type != null &&  !type.trim().isEmpty()){
+            if(movieEntity.getType() != null &&  !movieEntity.getType().trim().isEmpty()){
                 
-                movieEntity.setTypeName(getTagNames(type));
+                movieEntity.setTypeName(getTagNames(movieEntity.getType()));
             }
-            if(language != null &&  !language.trim().isEmpty()){
-                movieEntity.setLanguageName(getTagNames(language));
+            if(movieEntity.getLanguage() != null &&  !movieEntity.getLanguage().trim().isEmpty()){
+                movieEntity.setLanguageName(getTagNames(movieEntity.getLanguage()));
+            }
+            if(movieEntity.getSourceCountry() != null){
+                movieEntity.setCountryName(getTagNames(String.valueOf(movieEntity.getSourceCountry())));
             }
         }
 

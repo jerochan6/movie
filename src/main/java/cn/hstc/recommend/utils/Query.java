@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * 查询参数
  *
- * @author tengen
+ * @author Zero.
  */
 public class Query<T> {
 

@@ -92,6 +92,9 @@ public class MovieEntity implements Serializable {
 	//用于存放language中id的值
 	@TableField(exist = false)
 	private String languageName;
+	//用于存放country中id的值
+	@TableField(exist = false)
+	private String countryName;
 
 	public String getTypeName() {
 		return typeName;
@@ -103,6 +106,14 @@ public class MovieEntity implements Serializable {
 
 	public Integer getId() {
 		return id;
+	}
+
+	public String getCountryName() {
+		return countryName;
+	}
+
+	public void setCountryName(String countryName) {
+		this.countryName = countryName;
 	}
 
 	public void setId(Integer id) {
@@ -225,11 +236,6 @@ public class MovieEntity implements Serializable {
 		return languageName;
 	}
 
-
-
-	public void setLanguageName(String languageName) {
-		this.languageName = languageName;
-	}
 	@Override
 	public String toString() {
 		return "MovieEntity{" +
@@ -250,6 +256,12 @@ public class MovieEntity implements Serializable {
 				", movieName='" + movieName + '\'' +
 				", typeName='" + typeName + '\'' +
 				", languageName='" + languageName + '\'' +
+				", countryName='" + countryName + '\'' +
 				'}';
 	}
+
+	public void setLanguageName(String languageName) {
+		this.languageName = languageName;
+	}
+
 }

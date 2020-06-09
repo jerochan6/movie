@@ -5,6 +5,8 @@ import java.util.Map;
 
 import cn.hstc.recommend.interceptor.UserAdminToken;
 import cn.hstc.recommend.interceptor.UserLoginToken;
+import cn.hstc.recommend.utils.Constant;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -48,9 +50,15 @@ public class OperateController {
      * 信息
      */
 
-    @RequestMapping("/info/{id}")
-    public Result info(@PathVariable("id") Integer id){
-        OperateEntity operate = operateService.getById(id);
+    @UserLoginToken
+    @RequestMapping("/info/{movieId}")
+    public Result info(@PathVariable("movieId") Integer movieId){
+
+        OperateEntity operate = operateService.getOne(
+                new QueryWrapper<OperateEntity>()
+                        .eq("user_id", Constant.currentId)
+                        .eq("movie_id",movieId)
+        );
         if(operate == null){
             operate = new OperateEntity();
         }

@@ -1,5 +1,7 @@
 package cn.hstc.recommend.service.impl;
 
+import cn.hstc.recommend.dao.MovieDao;
+import cn.hstc.recommend.entity.MovieEntity;
 import cn.hstc.recommend.utils.Constant;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,8 @@ public class OperateServiceImpl extends ServiceImpl<OperateDao, OperateEntity> i
     @Autowired
     private OperateDao operateDao;
 
+    @Autowired
+    private MovieDao movieDao;
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
         //设置查询条件
@@ -40,15 +44,27 @@ public class OperateServiceImpl extends ServiceImpl<OperateDao, OperateEntity> i
      **/
     @Override
     public boolean updateById(OperateEntity operateEntity){
+        boolean flag = true;
         operateEntity.setUserId(Constant.currentId);
         QueryWrapper<OperateEntity> wrapper = new QueryWrapper<OperateEntity>()
                 .eq("user_id",operateEntity.getUserId())
                 .eq("movie_id",operateEntity.getMovieId());
         OperateEntity operate = this.baseMapper.selectOne(wrapper);
         if(operate == null){
-            return SqlHelper.retBool(this.baseMapper.insert(operateEntity));
+            flag =  SqlHelper.retBool(this.baseMapper.insert(operateEntity));
+        }else {
+            operateEntity.setId(operate.getId());
+            flag = SqlHelper.retBool(this.baseMapper.updateById(operateEntity));
         }
-        return  SqlHelper.retBool(this.baseMapper.updateById(operateEntity));
+        if (operateEntity.getScore() != null){
+            Double newScore = operateDao.selectScoreByMovie(operateEntity.getMovieId());
+            MovieEntity movieEntity = new MovieEntity();
+            movieEntity.setId(operateEntity.getMovieId());
+            movieEntity.setScore(newScore);
+            flag = SqlHelper.retBool(movieDao.updateById(movieEntity));
+        }
+
+        return flag;
     }
 
 }

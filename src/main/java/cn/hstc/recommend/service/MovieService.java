@@ -1,5 +1,6 @@
 package cn.hstc.recommend.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.IService;
 import cn.hstc.recommend.utils.PageUtils;
 import cn.hstc.recommend.entity.MovieEntity;
@@ -17,8 +18,9 @@ import java.util.Map;
  */
 public interface MovieService extends IService<MovieEntity> {
 
-    PageUtils queryPage(Map<String, Object> params);
+    PageUtils queryPage(Map<String, Object> params, QueryWrapper<MovieEntity> wrapper);
 
+    MovieEntity getById(Integer id);
 
     boolean removeByIds(Collection<? extends Serializable> idList,String path);
 

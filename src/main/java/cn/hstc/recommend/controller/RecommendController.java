@@ -3,6 +3,7 @@ package cn.hstc.recommend.controller;
 import java.util.Arrays;
 import java.util.Map;
 
+import cn.hstc.recommend.interceptor.UserLoginToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,8 +19,6 @@ import cn.hstc.recommend.utils.Result;
 
 
 /**
- * 
- *
  * @author Zero
  * @email 570057386@qq.com
  * @date 2020-05-17 10:02:22
@@ -33,13 +32,12 @@ public class RecommendController {
     /**
      * 列表
      */
+    @UserLoginToken
     @RequestMapping("/listPage")
     public Result list(@RequestParam Map<String, Object> params){
         PageUtils page = recommendService.queryPage(params);
-
         return new Result().ok(page);
     }
-
 
     /**
      * 信息
@@ -79,6 +77,17 @@ public class RecommendController {
         recommendService.removeByIds(Arrays.asList(ids));
 
         return new Result().ok("删除成功");
+    }
+
+    /**
+     * 删除
+     */
+    @UserLoginToken
+    @RequestMapping("/get")
+    public boolean get(){
+        recommendService.generateRecommend(10);
+
+        return true;
     }
 
 }

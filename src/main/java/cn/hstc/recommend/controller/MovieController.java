@@ -11,6 +11,7 @@ import cn.hstc.recommend.interceptor.PassToken;
 import cn.hstc.recommend.interceptor.UserAdminToken;
 import cn.hstc.recommend.utils.Constant;
 import cn.hstc.recommend.utils.UploadUtils;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -48,7 +49,7 @@ public class MovieController {
     @RequestMapping("/listPage")
     public Result listPage(@RequestParam Map<String, Object> params){
 
-        PageUtils page = movieService.queryPage(params);
+        PageUtils page = movieService.queryPage(params,new QueryWrapper<>());
 
         return new Result().ok(page);
     }
@@ -82,10 +83,10 @@ public class MovieController {
     @RequestMapping("/update")
     public Result update(@RequestBody MovieEntity movie){
         if(movie.getType().isEmpty()){
-            movie.setType(" ");
+            movie.setType(null);
         }
         if(movie.getLanguage().isEmpty()){
-            movie.setType(" ");
+            movie.setLanguage(null);
         }
         movieService.updateById(movie);
         

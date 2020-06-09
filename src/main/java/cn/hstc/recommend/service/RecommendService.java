@@ -4,7 +4,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import cn.hstc.recommend.utils.PageUtils;
 import cn.hstc.recommend.entity.RecommendEntity;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 
@@ -16,5 +18,7 @@ import java.util.Map;
 public interface RecommendService extends IService<RecommendEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    Set<RecommendEntity> generateRecommend(int maxNum);
 }
 
