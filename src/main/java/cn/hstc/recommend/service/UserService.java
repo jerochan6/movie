@@ -22,6 +22,5 @@ public interface UserService extends IService<UserEntity> {
 
     Result loginValidate(String userName,String password);
 
-//   String getToken(UserEntity user);
 }
 

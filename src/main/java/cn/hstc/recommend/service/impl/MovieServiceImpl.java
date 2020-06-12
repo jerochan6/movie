@@ -21,6 +21,7 @@ import cn.hstc.recommend.utils.Query;
 import cn.hstc.recommend.dao.MovieDao;
 import cn.hstc.recommend.entity.MovieEntity;
 import cn.hstc.recommend.service.MovieService;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service("movieService")
@@ -101,6 +102,7 @@ public class MovieServiceImpl extends ServiceImpl<MovieDao, MovieEntity> impleme
      * @return boolean
      **/
     @Override
+    @Transactional(rollbackFor = RuntimeException.class)
     public boolean removeByIds(Collection<? extends Serializable> idList,String path){
         //根据电影id获得电影
         List<MovieEntity> list = this.baseMapper.selectBatchIds(idList);

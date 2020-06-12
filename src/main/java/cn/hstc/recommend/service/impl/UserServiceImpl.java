@@ -14,6 +14,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import cn.hstc.recommend.dao.UserDao;
 import cn.hstc.recommend.entity.UserEntity;
 import cn.hstc.recommend.service.UserService;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service("userService")
@@ -53,5 +54,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
         }
         return new Result().error("登录失败，请检查账号和密码！");
     }
+
+
 
 }
