@@ -110,6 +110,4 @@ public class UserController {
 //    public boolean isLogin(){
 //        return  true;
 //    }
-
-
 }

@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 
 import java.lang.reflect.Method;
-import java.util.Date;
 
 /**
  * @ClassName TokenHelp
@@ -32,10 +31,6 @@ public class TokenHelp {
             // 执行认证
             if (token == null) {
                 throw new RRException("无token，请重新登录");
-            }
-            //验证token是否已过期
-            if(JWT.decode(token).getExpiresAt().compareTo(new Date()) < 0){
-                throw new RRException("登录已过期，请重新登录！");
             }
             // 获取 token 中的 user id
             String userId;
@@ -63,22 +58,13 @@ public class TokenHelp {
             } catch (JWTVerificationException e) {
                 throw new RRException("401");
             }
-
-
             return true;
     }
 
     public String getToken(UserEntity user) {
         String token="";
-        token= JWT.create()
-                //用户id
-                .withAudience(user.getId().toString())
-                //用户登录的时间
-                .withIssuedAt(new Date())
-                //token过期时间为一个小时
-                .withExpiresAt(new Date(System.currentTimeMillis() + 24*3600000))
-                .sign(Algorithm.HMAC256(user.getPassword()))
-                ;
+        token= JWT.create().withAudience(user.getId().toString())
+                .sign(Algorithm.HMAC256(user.getPassword()));
         return token;
     }
 }

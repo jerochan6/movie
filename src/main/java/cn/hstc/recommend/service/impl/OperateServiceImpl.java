@@ -15,7 +15,6 @@ import cn.hstc.recommend.utils.Query;
 import cn.hstc.recommend.dao.OperateDao;
 import cn.hstc.recommend.entity.OperateEntity;
 import cn.hstc.recommend.service.OperateService;
-import org.springframework.transaction.annotation.Transactional;
 
 
 @Service("operateService")
@@ -44,7 +43,6 @@ public class OperateServiceImpl extends ServiceImpl<OperateDao, OperateEntity> i
      * @return boolean
      **/
     @Override
-    @Transactional(rollbackFor = RuntimeException.class)
     public boolean updateById(OperateEntity operateEntity){
         boolean flag = true;
         operateEntity.setUserId(Constant.currentId);

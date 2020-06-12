@@ -138,6 +138,4 @@ public class MovieController {
         System.out.println(filePath + "/" + fileName);
         return new Result().ok(UploadUtils.IMG_PATH_PREFIX+"/"+fileName);
     }
-
-
 }

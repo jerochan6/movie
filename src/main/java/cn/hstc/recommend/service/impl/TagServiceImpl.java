@@ -15,7 +15,6 @@ import cn.hstc.recommend.utils.Query;
 import cn.hstc.recommend.dao.TagDao;
 import cn.hstc.recommend.entity.TagEntity;
 import cn.hstc.recommend.service.TagService;
-import org.springframework.transaction.annotation.Transactional;
 
 
 @Service("tagService")
@@ -105,7 +104,6 @@ public class TagServiceImpl extends ServiceImpl<TagDao, TagEntity> implements Ta
     }
 
     @Override
-    @Transactional(rollbackFor = RuntimeException.class)
     public boolean removeByIds(Collection<? extends Serializable > idList){
       try {
           List<TagEntity> tagEntities = this.baseMapper.selectBatchIds(idList);
