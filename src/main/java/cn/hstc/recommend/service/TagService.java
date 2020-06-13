@@ -1,5 +1,6 @@
 package cn.hstc.recommend.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.IService;
 import cn.hstc.recommend.utils.PageUtils;
 import cn.hstc.recommend.entity.TagEntity;
@@ -24,5 +25,7 @@ public interface TagService extends IService<TagEntity> {
 
     @Override
     boolean removeByIds(Collection<? extends Serializable> idList);
+
+    TagEntity getById(Integer id);
 }
 

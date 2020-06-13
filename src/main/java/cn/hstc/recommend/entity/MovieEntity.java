@@ -96,6 +96,10 @@ public class MovieEntity implements Serializable {
 	@TableField(exist = false)
 	private String countryName;
 
+	//用于存放该电影的用户评论数
+	@TableField(exist = false)
+	private Integer numOfCommentUsers;
+
 	public String getTypeName() {
 		return typeName;
 	}
@@ -234,6 +238,14 @@ public class MovieEntity implements Serializable {
 
 	public String getLanguageName() {
 		return languageName;
+	}
+
+	public Integer getNumOfCommentUsers() {
+		return numOfCommentUsers;
+	}
+
+	public void setNumOfCommentUsers(Integer numOfCommentUsers) {
+		this.numOfCommentUsers = numOfCommentUsers;
 	}
 
 	@Override

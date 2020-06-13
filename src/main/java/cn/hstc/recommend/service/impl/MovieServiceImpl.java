@@ -1,6 +1,9 @@
 package cn.hstc.recommend.service.impl;
 
+import cn.hstc.recommend.entity.CommentEntity;
+import cn.hstc.recommend.entity.OperateEntity;
 import cn.hstc.recommend.entity.TagEntity;
+import cn.hstc.recommend.service.CommentService;
 import cn.hstc.recommend.service.TagService;
 import cn.hstc.recommend.utils.UploadUtils;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
@@ -9,10 +12,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -29,14 +30,71 @@ public class MovieServiceImpl extends ServiceImpl<MovieDao, MovieEntity> impleme
     @Autowired
     private TagService tagService;
 
+    @Autowired
+    private CommentService commentService;
+
+    @Autowired
+    private MovieDao movieDao;
+
+
     @Override
-    public PageUtils queryPage(Map<String, Object> params,QueryWrapper<MovieEntity> wrapper) {
-        IPage<MovieEntity> page = this.page(
-                new Query<MovieEntity>().getPage(params),
-                wrapper
-        );
+    public PageUtils queryPage(Map<String, Object> params, QueryWrapper wrapper) {
+
+        wrapper.apply("1=1 ");
+        //根据类型查电影
+        if(params.get("type") != null){
+            String type = (String) params.get("type");
+             wrapper.apply("FIND_IN_SET("+type+",type) ");
+        }
+        //根据语言查询电影
+        if(params.get("language") != null){
+            String language = (String) params.get("language");
+            wrapper.apply("FIND_IN_SET("+language+",language) ");
+        }
+        //根据地区查询电影
+        if(params.get("sourceCountry") != null){
+            String sourceCountry = (String) params.get("sourceCountry");
+            wrapper.apply("FIND_IN_SET("+sourceCountry+",source_country) ");
+        }
+        //根据年份查询
+        if(params.get("releaseTime") != null){
+            String releaseTime = (String) params.get("releaseTime");
+           wrapper.like("release_time",releaseTime);
+        }
+
+        IPage<MovieEntity> page = new Query<MovieEntity>().getPage(params);
+        page.setTotal(this.baseMapper.selectCount(wrapper));
+        wrapper.groupBy("m.id");
+        //排序
+        if(params.get("orderBy") != null){
+            String orderBy = (String) params.get("orderBy");
+            if(orderBy.equals("releaseTime")){
+                orderBy = "release_time";
+            }
+            wrapper.orderByDesc(orderBy);
+        }
+        page.setRecords(movieDao.selectListPage(page.offset(),page.getSize(),wrapper));
         List<MovieEntity> movieEntities = page.getRecords();
         insertColumnName(movieEntities);
+//        //根据热度排序
+//        if(params.get("orderBy") != null){
+//            String orderBy = (String) params.get("orderBy");
+//            if(orderBy.equals("hot")){
+//                movieEntities.sort(new Comparator<MovieEntity>() {
+//                    @Override
+//                    public int compare(MovieEntity o1, MovieEntity o2) {
+//                        //按评论数降序
+//                        if(o1.getNumOfCommentUsers() > o2.getNumOfCommentUsers()){
+//                            return -1;
+//                        }
+//                        if(o1.getNumOfCommentUsers().equals(o2.getNumOfCommentUsers())){
+//                            return 0;
+//                        }
+//                        return 1;
+//                    }
+//                });
+//            }
+//        }
         return new PageUtils(page);
     }
 
@@ -69,6 +127,12 @@ public class MovieServiceImpl extends ServiceImpl<MovieDao, MovieEntity> impleme
             if(movieEntity.getSourceCountry() != null){
                 movieEntity.setCountryName(getTagNames(String.valueOf(movieEntity.getSourceCountry())));
             }
+//            //插入电影的评论数（根据用户去重）
+//            movieEntity.setNumOfCommentUsers(commentService.count(
+//                    new QueryWrapper<CommentEntity>()
+//                        .eq("movie_id",movieEntity.getId())
+//                        .groupBy("user_id")
+//            ));
         }
 
     }
@@ -138,7 +202,7 @@ public class MovieServiceImpl extends ServiceImpl<MovieDao, MovieEntity> impleme
      **/
     @Override
     public boolean save(MovieEntity movieEntity){
-
+        movieEntity.setCreateTime(new Date());
         return this.retBool(this.baseMapper.insert(movieEntity));
     }
 }

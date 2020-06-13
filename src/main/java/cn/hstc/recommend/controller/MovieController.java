@@ -49,7 +49,8 @@ public class MovieController {
     @RequestMapping("/listPage")
     public Result listPage(@RequestParam Map<String, Object> params){
 
-        PageUtils page = movieService.queryPage(params,new QueryWrapper<>());
+
+        PageUtils page = movieService.queryPage(params,new QueryWrapper<MovieEntity>());
 
         return new Result().ok(page);
     }

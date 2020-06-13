@@ -118,4 +118,14 @@ public class TagServiceImpl extends ServiceImpl<TagDao, TagEntity> implements Ta
           return false;
       }
     }
+
+    @Override
+    public TagEntity getById(Integer id) {
+        TagEntity tagEntity = this.baseMapper.selectById(id);
+        List list = new ArrayList();
+        list.add(tagEntity);
+        insertColumnName(list);
+
+        return tagEntity;
+    }
 }

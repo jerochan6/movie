@@ -18,7 +18,7 @@ import java.util.Map;
  */
 public interface MovieService extends IService<MovieEntity> {
 
-    PageUtils queryPage(Map<String, Object> params, QueryWrapper<MovieEntity> wrapper);
+    PageUtils queryPage(Map<String, Object> params, QueryWrapper wrapper);
 
     MovieEntity getById(Integer id);
 

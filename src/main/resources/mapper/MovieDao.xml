@@ -23,4 +23,17 @@
     </resultMap>
 
 
+    <select id="selectListPage" resultMap="movieMap">
+        select m.id,m.movie_info,m.release_time,m.director,
+        m.writer,m.actor,m.type,
+        m.source_country,m.language,m.movie_length,
+        m.movie_link,m.movie_image,m.score,m.create_time,
+        m.movie_name,count(c.id) as numOfCommentUsers
+        from movie m
+        LEFT JOIN `comment` as c on c.movie_id = m.id
+        <where>
+        ${ew.sqlSegment}
+        </where>
+        limit #{offset},#{size}
+    </select>
 </mapper>
