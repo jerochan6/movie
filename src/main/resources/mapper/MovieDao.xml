@@ -32,7 +32,6 @@
         from movie m
         LEFT JOIN `comment` as c on c.movie_id = m.id
         <where>
-        1 = 1
         ${ew.sqlSegment}
         </where>
         limit #{offset},#{size}

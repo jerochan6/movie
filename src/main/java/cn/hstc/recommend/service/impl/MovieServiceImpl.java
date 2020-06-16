@@ -47,37 +47,40 @@ public class MovieServiceImpl extends ServiceImpl<MovieDao, MovieEntity> impleme
     private Long REDIS_EXPIRE;
     @Value("${redis.key.movie}")
     private String REDIS_KEY_MOVIE;
-    @Value("${redis.key.resourceList}")
+    @Value("${redis.key.movieResourceList}")
     private String REDIS_KEY_RESOURCE_LIST;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params, QueryWrapper wrapper) {
 
-        StringBuilder key = new StringBuilder(REDIS_DATABASE + ":" + REDIS_KEY_MOVIE+":"+REDIS_KEY_RESOURCE_LIST);
+        //生成key
+        StringBuilder key = new StringBuilder(REDIS_DATABASE + ":" +
+                REDIS_KEY_MOVIE+":"+REDIS_KEY_RESOURCE_LIST + ":" + params.hashCode());
 
+        wrapper.apply("1=1");
         //根据类型查电影
         if(params.get("type") != null){
             String type = (String) params.get("type");
              wrapper.apply("FIND_IN_SET("+type+",type) ");
-            key.append(":"+type);
+//            key.append(":"+type);
         }
         //根据语言查询电影
         if(params.get("language") != null){
             String language = (String) params.get("language");
             wrapper.apply("FIND_IN_SET("+language+",language) ");
-            key.append(":"+language);
+//            key.append(":"+language);
         }
         //根据地区查询电影
         if(params.get("sourceCountry") != null){
             String sourceCountry = (String) params.get("sourceCountry");
             wrapper.apply("FIND_IN_SET("+sourceCountry+",source_country) ");
-            key.append(":"+sourceCountry);
+//            key.append(":"+sourceCountry);
         }
         //根据年份查询
         if(params.get("releaseTime") != null){
             String releaseTime = (String) params.get("releaseTime");
            wrapper.like("release_time",releaseTime);
-            key.append(":"+releaseTime);
+//            key.append(":"+releaseTime);
         }
 
         IPage<MovieEntity> page = new Query<MovieEntity>().getPage(params);
@@ -90,10 +93,11 @@ public class MovieServiceImpl extends ServiceImpl<MovieDao, MovieEntity> impleme
                 orderBy = "release_time";
             }
             wrapper.orderByDesc(orderBy);
-            key.append(":"+orderBy);
+//            key.append(":"+orderBy);
         }
         if(redisService.get(key.toString()) != null){
-            System.out.println( redisService.get(key.toString()));
+            page.setRecords(((List<MovieEntity>) redisService.get(key.toString())));
+            return new PageUtils(page);
         }
 
         page.setRecords(movieDao.selectListPage(page.offset(),page.getSize(),wrapper));
@@ -108,6 +112,7 @@ public class MovieServiceImpl extends ServiceImpl<MovieDao, MovieEntity> impleme
 //                    @Override
 //                    public int compare(MovieEntity o1, MovieEntity o2) {
 //                        //按评论数降序
+
 //                        if(o1.getNumOfCommentUsers() > o2.getNumOfCommentUsers()){
 //                            return -1;
 //                        }
