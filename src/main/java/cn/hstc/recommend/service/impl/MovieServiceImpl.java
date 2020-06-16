@@ -4,10 +4,12 @@ import cn.hstc.recommend.entity.CommentEntity;
 import cn.hstc.recommend.entity.OperateEntity;
 import cn.hstc.recommend.entity.TagEntity;
 import cn.hstc.recommend.service.CommentService;
+import cn.hstc.recommend.service.RedisService;
 import cn.hstc.recommend.service.TagService;
 import cn.hstc.recommend.utils.UploadUtils;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -36,30 +38,46 @@ public class MovieServiceImpl extends ServiceImpl<MovieDao, MovieEntity> impleme
     @Autowired
     private MovieDao movieDao;
 
+    @Autowired
+    private RedisService redisService;
+
+    @Value("${redis.database}")
+    private String REDIS_DATABASE;
+    @Value("${redis.expire.common}")
+    private Long REDIS_EXPIRE;
+    @Value("${redis.key.movie}")
+    private String REDIS_KEY_MOVIE;
+    @Value("${redis.key.resourceList}")
+    private String REDIS_KEY_RESOURCE_LIST;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params, QueryWrapper wrapper) {
 
-        wrapper.apply("1=1 ");
+        StringBuilder key = new StringBuilder(REDIS_DATABASE + ":" + REDIS_KEY_MOVIE+":"+REDIS_KEY_RESOURCE_LIST);
+
         //根据类型查电影
         if(params.get("type") != null){
             String type = (String) params.get("type");
              wrapper.apply("FIND_IN_SET("+type+",type) ");
+            key.append(":"+type);
         }
         //根据语言查询电影
         if(params.get("language") != null){
             String language = (String) params.get("language");
             wrapper.apply("FIND_IN_SET("+language+",language) ");
+            key.append(":"+language);
         }
         //根据地区查询电影
         if(params.get("sourceCountry") != null){
             String sourceCountry = (String) params.get("sourceCountry");
             wrapper.apply("FIND_IN_SET("+sourceCountry+",source_country) ");
+            key.append(":"+sourceCountry);
         }
         //根据年份查询
         if(params.get("releaseTime") != null){
             String releaseTime = (String) params.get("releaseTime");
            wrapper.like("release_time",releaseTime);
+            key.append(":"+releaseTime);
         }
 
         IPage<MovieEntity> page = new Query<MovieEntity>().getPage(params);
@@ -72,10 +90,16 @@ public class MovieServiceImpl extends ServiceImpl<MovieDao, MovieEntity> impleme
                 orderBy = "release_time";
             }
             wrapper.orderByDesc(orderBy);
+            key.append(":"+orderBy);
         }
+        if(redisService.get(key.toString()) != null){
+            System.out.println( redisService.get(key.toString()));
+        }
+
         page.setRecords(movieDao.selectListPage(page.offset(),page.getSize(),wrapper));
         List<MovieEntity> movieEntities = page.getRecords();
         insertColumnName(movieEntities);
+        redisService.set(key.toString(),movieEntities,REDIS_EXPIRE);
 //        //根据热度排序
 //        if(params.get("orderBy") != null){
 //            String orderBy = (String) params.get("orderBy");
