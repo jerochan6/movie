@@ -24,6 +24,10 @@ public interface MovieService extends IService<MovieEntity> {
 
     boolean removeByIds(Collection<? extends Serializable> idList,String path);
 
+    @Override
     boolean save(MovieEntity movieEntity);
+
+    @Override
+    boolean updateById(MovieEntity movieEntity);
 }
 

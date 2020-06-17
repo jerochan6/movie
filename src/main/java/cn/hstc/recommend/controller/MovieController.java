@@ -83,12 +83,7 @@ public class MovieController {
     @UserAdminToken
     @RequestMapping("/update")
     public Result update(@RequestBody MovieEntity movie){
-        if(movie.getType().isEmpty()){
-            movie.setType(null);
-        }
-        if(movie.getLanguage().isEmpty()){
-            movie.setLanguage(null);
-        }
+
         movieService.updateById(movie);
         
         return new Result().ok("修改成功");
