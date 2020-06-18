@@ -189,4 +189,13 @@ public interface RedisService {
      * @return
      **/
     boolean delKeys(String preKey);
+
+    /**
+     * @Author zehao
+     * @Description //TODO 判断redis服务器是否连接
+     * @Date 10:49 2020/6/18
+     * @Param []
+     * @return boolean
+     **/
+    boolean isExposeConnection();
 }

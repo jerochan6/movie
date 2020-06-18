@@ -205,5 +205,14 @@ public class RedisServiceImpl implements RedisService {
         return this.del(new ArrayList<>(keys)) > 0L ? true : false;
     }
 
-
+    @Override
+    public boolean isExposeConnection(){
+        boolean flag = true;
+        try {
+          redisTemplate.getConnectionFactory().getConnection().ping();
+        }catch (Exception e){
+           flag = false;
+        }
+        return flag;
+    }
 }
