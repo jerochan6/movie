@@ -60,9 +60,7 @@ public class CommentController {
     @RequestMapping("/save")
     public Result save(@RequestBody CommentEntity comment){
         //如果不是管理员账号，则用户只能保存自己的评论
-        if(Constant.currentId != Constant.SUPER_ADMIN){
-            comment.setUserId(Constant.currentId);
-        }
+        comment.setUserId(Constant.currentId);
         commentService.save(comment);
 
         return new Result().ok("保存成功");

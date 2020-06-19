@@ -78,7 +78,6 @@ public class UserController {
     @RequestMapping("/update")
     public Result update(@RequestBody UserEntity user){
         userService.updateById(user);
-        
         return new Result().ok("修改成功");
     }
 

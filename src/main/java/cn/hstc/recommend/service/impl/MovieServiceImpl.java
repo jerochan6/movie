@@ -22,6 +22,7 @@ import cn.hstc.recommend.utils.Query;
 import cn.hstc.recommend.dao.MovieDao;
 import cn.hstc.recommend.entity.MovieEntity;
 import cn.hstc.recommend.service.MovieService;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service("movieService")
@@ -164,11 +165,12 @@ public class MovieServiceImpl extends ServiceImpl<MovieDao, MovieEntity> impleme
      * @Param [idList]
      * @return boolean
      **/
+    @Transactional(rollbackFor = RuntimeException.class)
     @Override
     public boolean removeByIds(Collection<? extends Serializable> idList,String path){
         //根据电影id获得电影
         List<MovieEntity> list = this.baseMapper.selectBatchIds(idList);
-        //遍历电影集合，如果电影的图片不为空，则图片在本地中物理删除
+        //遍历电影集合，如果电影的图片不为空，则图片在本地中s物理删除
         for (MovieEntity movie:
              list) {
 
