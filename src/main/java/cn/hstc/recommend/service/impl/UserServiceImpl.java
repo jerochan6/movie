@@ -1,5 +1,6 @@
 package cn.hstc.recommend.service.impl;
 
+import cn.hstc.recommend.exception.RRException;
 import cn.hstc.recommend.utils.*;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -52,6 +53,35 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
             return result.ok(map);
         }
         return new Result().error("登录失败，请检查账号和密码！");
+    }
+
+    @Override
+    public boolean updateById(UserEntity userEntity){
+        userEntity.setId(Constant.currentId);
+        this.REXValidate(userEntity);
+
+        return this.retBool(this.baseMapper.updateById(userEntity));
+    }
+
+    private void REXValidate(UserEntity userEntity){
+        if(null != userEntity.getUserName()){
+            String username = userEntity.getUserName();
+            if(!username.matches(Constant.USERNAMERRE)){
+                throw new RRException("登录名：只能输入5-20个以字母开头、可带数字、“_”、“.”的字串 ");
+            }
+        }
+        if(null != userEntity.getPassword()){
+            String password = userEntity.getPassword();
+            if(!password.matches(Constant.PSWREX)){
+                throw new RRException("密码只能为6-20个字母、数字、下划线 ");
+            }
+        }
+        if(null != userEntity.getPhone()){
+            String phone = userEntity.getPhone();
+            if(!phone.matches(Constant.MOBILEPHONEREX)){
+                throw new RRException("请输入正确的手机号");
+            }
+        }
     }
 
 }

@@ -8,6 +8,7 @@ import cn.hstc.recommend.service.TagService;
 import cn.hstc.recommend.utils.UploadUtils;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -61,6 +62,12 @@ public class MovieServiceImpl extends ServiceImpl<MovieDao, MovieEntity> impleme
         if(params.get("releaseTime") != null){
             String releaseTime = (String) params.get("releaseTime");
            wrapper.like("release_time",releaseTime);
+        }
+
+        //根据电影名模糊查询
+        if(params.get("movieName") != null){
+            String movieName = (String) params.get("movieName");
+            wrapper.like("movie_name",movieName);
         }
 
         IPage<MovieEntity> page = new Query<MovieEntity>().getPage(params);
