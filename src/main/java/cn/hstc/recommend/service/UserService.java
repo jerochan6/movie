@@ -23,6 +23,9 @@ public interface UserService extends IService<UserEntity> {
 
     @Override
     boolean updateById(UserEntity userEntity);
+
+    @Override
+    boolean save(UserEntity userEntity);
 //   String getToken(UserEntity user);
 }
 

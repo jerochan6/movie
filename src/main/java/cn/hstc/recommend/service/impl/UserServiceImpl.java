@@ -2,11 +2,10 @@ package cn.hstc.recommend.service.impl;
 
 import cn.hstc.recommend.exception.RRException;
 import cn.hstc.recommend.utils.*;
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -54,16 +53,25 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
         }
         return new Result().error("登录失败，请检查账号和密码！");
     }
-
     @Override
     public boolean updateById(UserEntity userEntity){
         userEntity.setId(Constant.currentId);
+        userEntity.setUpdateTime(new Date());
         this.REXValidate(userEntity);
 
         return this.retBool(this.baseMapper.updateById(userEntity));
     }
 
+    @Override
+    public boolean save(UserEntity userEntity){
+
+        userEntity.setCreateTime(new Date());
+        this.REXValidate(userEntity);
+
+        return this.retBool(this.baseMapper.insert(userEntity));
+    }
     private void REXValidate(UserEntity userEntity){
+
         if(null != userEntity.getUserName()){
             String username = userEntity.getUserName();
             if(!username.matches(Constant.USERNAMERRE)){

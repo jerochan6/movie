@@ -66,6 +66,7 @@ public class UserController {
      */
     @RequestMapping("/save")
     public Result save(@RequestBody UserEntity user){
+
         userService.save(user);
 
         return new Result().ok("保存成功");
