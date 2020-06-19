@@ -1,6 +1,5 @@
 package cn.hstc.recommend.service;
 
-import cn.hstc.recommend.entity.TagEntity;
 import cn.hstc.recommend.utils.Result;
 import com.baomidou.mybatisplus.extension.service.IService;
 import cn.hstc.recommend.utils.PageUtils;
@@ -22,6 +21,11 @@ public interface UserService extends IService<UserEntity> {
 
     Result loginValidate(String userName,String password);
 
+    @Override
+    boolean updateById(UserEntity userEntity);
+
+    @Override
+    boolean save(UserEntity userEntity);
 //   String getToken(UserEntity user);
 }
 

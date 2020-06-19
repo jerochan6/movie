@@ -58,6 +58,16 @@ public class Constant {
      **/
     public static final String HOMEPHONEREX = "^(\\d{2,4}-?)?\\d{7,8}$";
     /**
+     * 密码正则
+     * 密码只能为6-20个字母、数字、下划线
+     **/
+    public static final String PSWREX="^(\\w){6,20}$";
+    /**
+     * 用户名正则
+     * 登录名：只能输入5-20个以字母开头、可带数字、“_”、“.”的字串
+     **/
+    public static final String USERNAMERRE = "^[a-zA-Z]{1}([a-zA-Z0-9]|[._]){4,19}$";
+    /**
      * 菜单类型
      */
     public enum MenuType {

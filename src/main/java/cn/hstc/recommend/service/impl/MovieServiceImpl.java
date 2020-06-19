@@ -92,6 +92,12 @@ public class MovieServiceImpl extends ServiceImpl<MovieDao, MovieEntity> impleme
 //            key.append(":"+releaseTime);
         }
 
+        //根据电影名模糊查询
+        if(params.get("movieName") != null){
+            String movieName = (String) params.get("movieName");
+            wrapper.like("movie_name",movieName);
+        }
+
         IPage<MovieEntity> page = new Query<MovieEntity>().getPage(params);
         page.setTotal(this.baseMapper.selectCount(wrapper));
         wrapper.groupBy("m.id");

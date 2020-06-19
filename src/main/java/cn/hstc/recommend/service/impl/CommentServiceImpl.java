@@ -24,8 +24,18 @@ public class CommentServiceImpl extends ServiceImpl<CommentDao, CommentEntity> i
 
         //设置查询条件
         QueryWrapper<CommentEntity> wrapper = new QueryWrapper<CommentEntity>();
+
         //关联多表查询，一次查询完成，提高效率
         IPage<CommentEntity> page = new Query<CommentEntity>().getPage(params);
+        if(null != params.get("movieId")){
+            Integer movieId = Integer.parseInt(((String) params.get("movieId")));
+            wrapper.eq("movie_id",movieId);
+        }
+        if(null != params.get("userId")){
+            Integer userId = Integer.parseInt(((String) params.get("userId")));
+            wrapper.eq("user_id",userId);
+        }
+
         page.setTotal(this.baseMapper.selectCount(wrapper));
         page.setRecords(commentDao.selectListPage(page.offset(),page.getSize(),wrapper));
         return new PageUtils(page);

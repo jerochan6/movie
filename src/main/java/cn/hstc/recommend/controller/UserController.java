@@ -66,6 +66,7 @@ public class UserController {
      */
     @RequestMapping("/save")
     public Result save(@RequestBody UserEntity user){
+
         userService.save(user);
 
         return new Result().ok("保存成功");
@@ -77,8 +78,8 @@ public class UserController {
     @UserLoginToken
     @RequestMapping("/update")
     public Result update(@RequestBody UserEntity user){
+
         userService.updateById(user);
-        
         return new Result().ok("修改成功");
     }
 

@@ -3,6 +3,7 @@
 
 <mapper namespace="cn.hstc.recommend.dao.MovieDao">
 
+
 	<!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="cn.hstc.recommend.entity.MovieEntity" id="movieMap">
         <result property="id" column="id"/>
