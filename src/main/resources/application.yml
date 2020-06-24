@@ -15,7 +15,7 @@ spring:
     min-idle: 10
     max-wait: 60000
     pool-prepared-statements: true
-    max-pool-prepared-statement-per-connection-size: 100
+    max-pool-prepared-statement-per-connection-size: 19
     time-between-eviction-runs-millis: 60000
     min-evictable-idle-time-millis: 300000
   jackson:

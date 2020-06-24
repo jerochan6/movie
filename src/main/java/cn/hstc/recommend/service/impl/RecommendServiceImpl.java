@@ -48,14 +48,16 @@ import javax.sql.DataSource;
 @Service("recommendService")
 public class RecommendServiceImpl extends ServiceImpl<RecommendDao, RecommendEntity> implements RecommendService {
 
-    @Autowired
     private DataSource dataSource;
-
-    @Autowired
     private OperateDao operateDao;
+    private MovieService movieService;
 
     @Autowired
-    private MovieService movieService;
+    RecommendServiceImpl(DataSource dataSource,OperateDao operateDao,MovieService movieService){
+        this.dataSource = dataSource;
+        this.operateDao = operateDao;
+        this.movieService = movieService;
+    }
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {

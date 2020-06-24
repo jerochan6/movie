@@ -16,9 +16,12 @@ import cn.hstc.recommend.service.CommentService;
 @Service("commentService")
 public class CommentServiceImpl extends ServiceImpl<CommentDao, CommentEntity> implements CommentService {
 
-    @Autowired
     private CommentDao commentDao;
 
+    @Autowired
+    CommentServiceImpl(CommentDao commentDao){
+        this.commentDao = commentDao;
+    }
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
 

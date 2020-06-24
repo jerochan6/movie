@@ -7,6 +7,7 @@ import cn.hstc.recommend.interceptor.PassToken;
 import cn.hstc.recommend.interceptor.UserAdminToken;
 import cn.hstc.recommend.interceptor.UserLoginToken;
 import cn.hstc.recommend.utils.Constant;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,11 +29,14 @@ import cn.hstc.recommend.utils.Result;
  * @email 570057386@qq.com
  * @date 2020-05-08 15:00:40
  */
+@Api("用户页面")
 @RestController
 @RequestMapping("user")
 public class UserController {
+
     @Autowired
     private UserService userService;
+
 
     /**
      * 用户列表,需要管理员登录后查看

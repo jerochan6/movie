@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 import cn.hstc.recommend.interceptor.UserLoginToken;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,12 +24,17 @@ import cn.hstc.recommend.utils.Result;
  * @email 570057386@qq.com
  * @date 2020-05-17 10:02:22
  */
+@Api("推荐电影页面")
 @RestController
 @RequestMapping("recommend")
 public class RecommendController {
-    @Autowired
+
     private RecommendService recommendService;
 
+    @Autowired
+    RecommendController(RecommendService recommendService){
+        this.recommendService = recommendService;
+    }
     /**
      * 列表
      */

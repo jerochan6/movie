@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,12 +26,17 @@ import cn.hstc.recommend.utils.Result;
  * @email 570057386@qq.com
  * @date 2020-05-14 14:31:34
  */
+@Api("标签页面")
 @RestController
 @RequestMapping("tag")
 public class TagController {
-    @Autowired
+
     private TagService tagService;
 
+    @Autowired
+    TagController(TagService tagService){
+        this.tagService = tagService;
+    }
     /**
      * 页面列表
      */

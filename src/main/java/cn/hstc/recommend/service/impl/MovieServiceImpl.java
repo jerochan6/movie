@@ -30,16 +30,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service("movieService")
 public class MovieServiceImpl extends ServiceImpl<MovieDao, MovieEntity> implements MovieService {
 
-    @Autowired
     private TagService tagService;
-
-    @Autowired
     private CommentService commentService;
-
-    @Autowired
     private MovieDao movieDao;
-
-    @Autowired
     private RedisService redisService;
 
     @Value("${redis.database}")
@@ -51,6 +44,15 @@ public class MovieServiceImpl extends ServiceImpl<MovieDao, MovieEntity> impleme
     @Value("${redis.key.movieResourceList}")
     private String REDIS_KEY_RESOURCE_LIST;
 
+    @Autowired
+    MovieServiceImpl(TagService tagService,CommentService commentService
+    ,MovieDao movieDao,RedisService redisService){
+        this.tagService = tagService;
+        this.commentService = commentService;
+        this.movieDao = movieDao;
+        this.redisService = redisService;
+    }
+
 
     @Override
     public PageUtils queryPage(Map<String, Object> params, QueryWrapper wrapper) {
@@ -59,11 +61,10 @@ public class MovieServiceImpl extends ServiceImpl<MovieDao, MovieEntity> impleme
         StringBuilder key = new StringBuilder(REDIS_DATABASE + ":" +
                 REDIS_KEY_MOVIE+":"+REDIS_KEY_RESOURCE_LIST + ":" + params.hashCode());
         if(redisService.isExposeConnection()){
-
-            //查找redis是否已存在该查询缓存
-            if(redisService.get(key.toString()) != null){
-                return new PageUtils((IPage<MovieEntity>) redisService.get(key.toString()));
-            }
+                //查找redis是否已存在该查询缓存
+                if(redisService.get(key.toString()) != null) {
+                    return new PageUtils((IPage<MovieEntity>) redisService.get(key.toString()));
+                }
         }
 
         wrapper.apply("1=1");

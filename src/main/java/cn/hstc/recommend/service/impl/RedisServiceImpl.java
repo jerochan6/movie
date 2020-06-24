@@ -15,9 +15,13 @@ import java.util.concurrent.TimeUnit;
 @Service("redisService")
 public class RedisServiceImpl implements RedisService {
 
-    @Autowired
-    public  RedisTemplate redisTemplate;
 
+    private RedisTemplate redisTemplate;
+
+    @Autowired
+    RedisServiceImpl(RedisTemplate redisTemplate){
+        this.redisTemplate = redisTemplate;
+    }
 
     @Override
     public void set(String key, Object value, long time) {
@@ -212,6 +216,7 @@ public class RedisServiceImpl implements RedisService {
           redisTemplate.getConnectionFactory().getConnection().ping();
         }catch (Exception e){
            flag = false;
+           e.printStackTrace();
         }
         return flag;
     }

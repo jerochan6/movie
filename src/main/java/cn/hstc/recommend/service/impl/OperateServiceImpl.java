@@ -20,11 +20,14 @@ import cn.hstc.recommend.service.OperateService;
 @Service("operateService")
 public class OperateServiceImpl extends ServiceImpl<OperateDao, OperateEntity> implements OperateService {
 
-    @Autowired
     private OperateDao operateDao;
+    private MovieDao movieDao;
 
     @Autowired
-    private MovieDao movieDao;
+    OperateServiceImpl(OperateDao operateDao,MovieDao movieDao){
+        this.operateDao = operateDao;
+        this.movieDao = movieDao;
+    }
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
         //设置查询条件

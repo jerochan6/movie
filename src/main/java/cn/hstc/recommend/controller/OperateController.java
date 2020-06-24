@@ -5,8 +5,10 @@ import java.util.Map;
 
 import cn.hstc.recommend.interceptor.UserAdminToken;
 import cn.hstc.recommend.interceptor.UserLoginToken;
+import cn.hstc.recommend.service.MovieService;
 import cn.hstc.recommend.utils.Constant;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,11 +30,17 @@ import cn.hstc.recommend.utils.Result;
  * @email 570057386@qq.com
  * @date 2020-05-25 22:44:02
  */
+@Api("操作页面")
 @RestController
 @RequestMapping("operate")
 public class OperateController {
-    @Autowired
+
     private OperateService operateService;
+
+    @Autowired
+    OperateController(OperateService operateService){
+        this.operateService = operateService;
+    }
 
     /**
      * 列表

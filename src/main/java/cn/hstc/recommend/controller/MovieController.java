@@ -12,6 +12,7 @@ import cn.hstc.recommend.interceptor.UserAdminToken;
 import cn.hstc.recommend.utils.Constant;
 import cn.hstc.recommend.utils.UploadUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,11 +37,17 @@ import javax.servlet.http.HttpServletRequest;
  * @email 570057386@qq.com
  * @date 2020-05-12 20:49:52
  */
+@Api("电影页面")
 @RestController
 @RequestMapping("movie")
 public class MovieController {
-    @Autowired
+
     private MovieService movieService;
+
+    @Autowired
+    MovieController(MovieService movieService){
+        this.movieService = movieService;
+    }
 
     /**
      * 列表(页面)

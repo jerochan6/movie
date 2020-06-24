@@ -19,8 +19,9 @@ import cn.hstc.recommend.service.UserService;
 @Service("userService")
 public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements UserService {
 
-    @Autowired
-    private TokenHelp tokenHelp;
+
+    private TokenHelp tokenHelp = new TokenHelp();
+
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {

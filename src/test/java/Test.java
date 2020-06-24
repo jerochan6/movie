@@ -1,3 +1,4 @@
+import cn.hstc.recommend.MovieApplication;
 import com.alibaba.druid.pool.DruidDataSource;
 import org.apache.mahout.cf.taste.common.TasteException;
 import org.apache.mahout.cf.taste.impl.common.FastByIDMap;
@@ -15,6 +16,7 @@ import org.apache.mahout.cf.taste.recommender.RecommendedItem;
 import org.apache.mahout.cf.taste.recommender.Recommender;
 import org.apache.mahout.cf.taste.similarity.ItemSimilarity;
 import org.apache.mahout.cf.taste.similarity.UserSimilarity;
+import org.springframework.boot.SpringApplication;
 
 import javax.sql.DataSource;
 import java.io.File;
@@ -129,16 +131,18 @@ public class Test {
 //
 //        preferences.put(5l, prefsForUser5);
 
-        DataModel model = new GenericDataModel(preferences);// DataModel的建立
-        ItemSimilarity similarity = new PearsonCorrelationSimilarity(model);//计算内容相似度
-//        UserNeighborhood neighborhood = new NearestNUserNeighborhood(2,similarity, model);//计算邻居
-        // 创建推荐引擎
-        Recommender recommender = new GenericItemBasedRecommender(model, similarity);//构造推荐引擎
-        //为用户1推荐2个
-        List<RecommendedItem> recommendations = recommender.recommend(3, 2);
-        for (RecommendedItem recommendation : recommendations) {
-            System.out.println(recommendation);
-        }
+//
+//        DataModel model = new GenericDataModel(preferences);// DataModel的建立
+//        ItemSimilarity similarity = new PearsonCorrelationSimilarity(model);//计算内容相似度
+////        UserNeighborhood neighborhood = new NearestNUserNeighborhood(2,similarity, model);//计算邻居
+//        // 创建推荐引擎
+//        Recommender recommender = new GenericItemBasedRecommender(model, similarity);//构造推荐引擎
+//        //为用户1推荐2个
+//        List<RecommendedItem> recommendations = recommender.recommend(3, 2);
+//        for (RecommendedItem recommendation : recommendations) {
+//            System.out.println(recommendation);
+//        }
 
+        SpringApplication.run(MovieApplication.class);
     }
 }

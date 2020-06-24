@@ -5,6 +5,7 @@ import java.util.Map;
 
 import cn.hstc.recommend.interceptor.UserLoginToken;
 import cn.hstc.recommend.utils.Constant;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,11 +27,18 @@ import cn.hstc.recommend.utils.Result;
  * @email 570057386@qq.com
  * @date 2020-05-25 22:44:02
  */
+@Api("评论页面")
 @RestController
 @RequestMapping("comment")
 public class CommentController {
-    @Autowired
+
+
     private CommentService commentService;
+
+    @Autowired
+    CommentController(CommentService commentService){
+        this.commentService = commentService;
+    }
 
     /**
      * 列表
