@@ -36,7 +36,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
         //查找是否存在该手机号
         UserEntity userEntity = this.baseMapper.selectOne(new QueryWrapper<UserEntity>()
                 .eq("user_name",userName));
-       //若不存在，提示用户登录失败
+        //若不存在，提示用户登录失败
         if(null == userEntity){
             return new Result().error("该账号未注册，请进行注册！");
         }
@@ -57,8 +57,10 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
     public boolean updateById(UserEntity userEntity){
         userEntity.setId(Constant.currentId);
         userEntity.setUpdateTime(new Date());
-        this.REXValidate(userEntity);
-
+        String result = this.REXValidate(userEntity);
+        if(result != null){
+            throw new RRException(result);
+        }
         return this.retBool(this.baseMapper.updateById(userEntity));
     }
 
@@ -66,30 +68,46 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
     public boolean save(UserEntity userEntity){
 
         userEntity.setCreateTime(new Date());
-        this.REXValidate(userEntity);
+        String result = this.REXValidate(userEntity);
 
+        if(result != null){
+            throw new RRException(result);
+        }
         return this.retBool(this.baseMapper.insert(userEntity));
     }
-    private void REXValidate(UserEntity userEntity){
+    private String REXValidate(UserEntity userEntity){
 
         if(null != userEntity.getUserName()){
             String username = userEntity.getUserName();
             if(!username.matches(Constant.USERNAMERRE)){
-                throw new RRException("登录名：只能输入5-20个以字母开头、可带数字、“_”、“.”的字串 ");
+                return "登录名：只能输入5-20个以字母开头、可带数字、“_”、“.”的字串 ";
+            }
+            //检查是否已存在该账户
+            UserEntity user = this.baseMapper.selectOne(new QueryWrapper<UserEntity>()
+                    .eq("user_name",userEntity.getUserName()));
+            if(user != null){
+                return "该用户名已存在";
             }
         }
         if(null != userEntity.getPassword()){
             String password = userEntity.getPassword();
             if(!password.matches(Constant.PSWREX)){
-                throw new RRException("密码只能为6-20个字母、数字、下划线 ");
+                return "密码只能为6-20个字母、数字、下划线 ";
             }
         }
         if(null != userEntity.getPhone()){
             String phone = userEntity.getPhone();
             if(!phone.matches(Constant.MOBILEPHONEREX)){
-                throw new RRException("请输入正确的手机号");
+                return "请输入正确的手机号";
+            }
+            //检查手机号是否已注册
+            UserEntity user = this.baseMapper.selectOne(new QueryWrapper<UserEntity>()
+                    .eq("phone",userEntity.getPhone()));
+            if(user != null){
+                return "该手机号已注册";
             }
         }
+        return null;
     }
 
 }
