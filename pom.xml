@@ -30,14 +30,8 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
-			<!--忽略内嵌tomcat，打包部署到tomcat。注*本地运行的时候要把这一段忽略引入个注释掉，要不然项目启动不了-->
-			<exclusions>
-				<exclusion>
-					<groupId>org.springframework.boot</groupId>
-					<artifactId>spring-boot-starter-tomcat</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -49,22 +43,16 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
-		<!--		<dependency>-->
-		<!--			<groupId>org.springframework.boot</groupId>-->
-		<!--			<artifactId>spring-boot-starter-tomcat</artifactId>-->
-		<!--			<scope></scope>-->
-		<!--		</dependency>-->
-
-
-		<!--添加servlet-api的依赖-->
 		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>3.1.0</version>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
 			<scope>provided</scope>
 		</dependency>
-
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+			<version> LATEST</version>
+		</dependency>
 		<!-- mysql驱动 -->
 		<dependency>
 			<groupId>mysql</groupId>
@@ -110,6 +98,11 @@
 			<artifactId>mahout</artifactId>
 			<version> LATEST</version>
 			<type>pom</type>
+		</dependency>
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.2</version>
 		</dependency>
 
 		<dependency>
