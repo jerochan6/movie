@@ -32,8 +32,10 @@ public class MovieServiceImpl extends ServiceImpl<MovieDao, MovieEntity> impleme
 
     private TagService tagService;
     private CommentService commentService;
-    private MovieDao movieDao;
     private RedisService redisService;
+
+    @Autowired
+    private MovieDao movieDao;
 
     @Value("${redis.database}")
     private String REDIS_DATABASE;
@@ -45,11 +47,11 @@ public class MovieServiceImpl extends ServiceImpl<MovieDao, MovieEntity> impleme
     private String REDIS_KEY_RESOURCE_LIST;
 
     @Autowired
-    MovieServiceImpl(TagService tagService,CommentService commentService
-    ,MovieDao movieDao,RedisService redisService){
+    MovieServiceImpl(TagService tagService, CommentService commentService
+            , RedisService redisService) {
         this.tagService = tagService;
         this.commentService = commentService;
-        this.movieDao = movieDao;
+
         this.redisService = redisService;
     }
 
@@ -59,53 +61,51 @@ public class MovieServiceImpl extends ServiceImpl<MovieDao, MovieEntity> impleme
 
         //生成key
         StringBuilder key = new StringBuilder(REDIS_DATABASE + ":" +
-                REDIS_KEY_MOVIE+":"+REDIS_KEY_RESOURCE_LIST + ":" + params.hashCode());
-        if(redisService.isExposeConnection()){
-                //查找redis是否已存在该查询缓存
-                if(redisService.get(key.toString()) != null) {
-                    return new PageUtils((IPage<MovieEntity>) redisService.get(key.toString()));
-                }
+                REDIS_KEY_MOVIE + ":" + REDIS_KEY_RESOURCE_LIST + ":" + params.hashCode());
+        //查找redis是否已存在该查询缓存
+        if (redisService.get(key.toString()) != null) {
+            return new PageUtils((IPage<MovieEntity>) redisService.get(key.toString()));
         }
 
         wrapper.apply("1=1");
         //根据类型查电影
-        if(params.get("type") != null){
+        if (params.get("type") != null) {
             String type = (String) params.get("type");
-             wrapper.apply("FIND_IN_SET("+type+",type) ");
+            wrapper.apply("FIND_IN_SET(" + type + ",type) ");
 //            key.append(":"+type);
         }
         //根据语言查询电影
-        if(params.get("language") != null){
+        if (params.get("language") != null) {
             String language = (String) params.get("language");
-            wrapper.apply("FIND_IN_SET("+language+",language) ");
+            wrapper.apply("FIND_IN_SET(" + language + ",language) ");
 //            key.append(":"+language);
         }
         //根据地区查询电影
-        if(params.get("sourceCountry") != null){
+        if (params.get("sourceCountry") != null) {
             String sourceCountry = (String) params.get("sourceCountry");
-            wrapper.apply("FIND_IN_SET("+sourceCountry+",source_country) ");
+            wrapper.apply("FIND_IN_SET(" + sourceCountry + ",source_country) ");
 //            key.append(":"+sourceCountry);
         }
         //根据年份查询
-        if(params.get("releaseTime") != null){
+        if (params.get("releaseTime") != null) {
             String releaseTime = (String) params.get("releaseTime");
-           wrapper.like("release_time",releaseTime);
+            wrapper.like("release_time", releaseTime);
 //            key.append(":"+releaseTime);
         }
 
         //根据电影名模糊查询
-        if(params.get("movieName") != null){
+        if (params.get("movieName") != null) {
             String movieName = (String) params.get("movieName");
-            wrapper.like("movie_name",movieName);
+            wrapper.like("movie_name", movieName);
         }
 
         IPage<MovieEntity> page = new Query<MovieEntity>().getPage(params);
         page.setTotal(this.baseMapper.selectCount(wrapper));
         wrapper.groupBy("m.id");
         //排序
-        if(params.get("orderBy") != null){
+        if (params.get("orderBy") != null) {
             String orderBy = (String) params.get("orderBy");
-            if(orderBy.equals("releaseTime")){
+            if (orderBy.equals("releaseTime")) {
                 orderBy = "release_time";
             }
             wrapper.orderByDesc(orderBy);
@@ -113,12 +113,10 @@ public class MovieServiceImpl extends ServiceImpl<MovieDao, MovieEntity> impleme
         }
 
 
-        page.setRecords(movieDao.selectListPage(page.offset(),page.getSize(),wrapper));
+        page.setRecords(movieDao.selectListPage(page.offset(), page.getSize(), wrapper));
         List<MovieEntity> movieEntities = page.getRecords();
         insertColumnName(movieEntities);
-        if(redisService.isExposeConnection()){
-            redisService.set(key.toString(),page,REDIS_EXPIRE);
-        }
+        redisService.set(key.toString(), page, REDIS_EXPIRE);
 //        //根据热度排序
 //        if(params.get("orderBy") != null){
 //            String orderBy = (String) params.get("orderBy");
@@ -152,23 +150,23 @@ public class MovieServiceImpl extends ServiceImpl<MovieDao, MovieEntity> impleme
     }
 
     /**
+     * @return void
      * @Author zehao
      * @Description 插入标签id转换的标签名
      * @Date 20:41 2020/5/15/015
      * @Param [movieEntities] 需要插入类型名的数组
-     * @return void
      **/
-    private void insertColumnName(List<MovieEntity> movieEntities){
+    private void insertColumnName(List<MovieEntity> movieEntities) {
 
-        for(MovieEntity movieEntity: movieEntities){
-            if(movieEntity.getType() != null &&  !movieEntity.getType().trim().isEmpty()){
-                
+        for (MovieEntity movieEntity : movieEntities) {
+            if (movieEntity.getType() != null && !movieEntity.getType().trim().isEmpty()) {
+
                 movieEntity.setTypeName(getTagNames(movieEntity.getType()));
             }
-            if(movieEntity.getLanguage() != null &&  !movieEntity.getLanguage().trim().isEmpty()){
+            if (movieEntity.getLanguage() != null && !movieEntity.getLanguage().trim().isEmpty()) {
                 movieEntity.setLanguageName(getTagNames(movieEntity.getLanguage()));
             }
-            if(movieEntity.getSourceCountry() != null){
+            if (movieEntity.getSourceCountry() != null) {
                 movieEntity.setCountryName(getTagNames(String.valueOf(movieEntity.getSourceCountry())));
             }
 //            //插入电影的评论数（根据用户去重）
@@ -180,106 +178,101 @@ public class MovieServiceImpl extends ServiceImpl<MovieDao, MovieEntity> impleme
         }
 
     }
+
     /**
+     * @return java.lang.String
      * @Author zehao
      * @Description //TODO 根据标签id查询标签名
      * @Date 15:54 2020/5/17/017
      * @Param [ids]
-     * @return java.lang.String
      **/
-    private String getTagNames(String ids){
+    private String getTagNames(String ids) {
         String[] tagIds = ids.split(",");
-        StringBuffer tagNames= new StringBuffer();
-        for(String tagId : tagIds){
+        StringBuffer tagNames = new StringBuffer();
+        for (String tagId : tagIds) {
             TagEntity tagEntity = tagService.getById(tagId);
-            if (tagEntity != null){
-                tagNames.append(tagEntity.getTagName()+",");
+            if (tagEntity != null) {
+                tagNames.append(tagEntity.getTagName() + ",");
             }
         }
-        if(tagNames.length() != 0){
+        if (tagNames.length() != 0) {
             tagNames.deleteCharAt(tagNames.toString().length() - 1);
         }
         return tagNames.toString();
     }
+
     /**
+     * @return boolean
      * @Author zehao
      * @Description //TODO 根据多个电影id删除电影
      * @Date 9:49 2020/5/26/026
      * @Param [idList]
-     * @return boolean
      **/
     @Transactional(rollbackFor = RuntimeException.class)
     @Override
-    public boolean removeByIds(Collection<? extends Serializable> idList,String path){
+    public boolean removeByIds(Collection<? extends Serializable> idList, String path) {
         //根据电影id获得电影
         List<MovieEntity> list = this.baseMapper.selectBatchIds(idList);
         //遍历电影集合，如果电影的图片不为空，则图片在本地中s物理删除
-        for (MovieEntity movie:
-             list) {
+        for (MovieEntity movie :
+                list) {
 
-            if(null != movie.getMovieImage()){
+            if (null != movie.getMovieImage()) {
                 // 上传后的路径
                 String dirPath = path + UploadUtils.STATIC_PATH;
                 //根据图片存储路径获取图片
-                File image = new File(dirPath  + movie.getMovieImage());
+                File image = new File(dirPath + movie.getMovieImage());
 
                 //如果图片存在，则删除
-                if(image.exists()){
-                    try{
+                if (image.exists()) {
+                    try {
                         image.delete();
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                         return false;
                     }
                 }
             }
         }
-        if(redisService.isExposeConnection()){
-            //删除缓存中的数据
-            redisService.delKeys(this.getMatchRedisPreKey());
-        }
+        //删除缓存中的数据
+        redisService.delKeys(this.getMatchRedisPreKey());
 
 
         //删除电影记录
         return SqlHelper.delBool(this.baseMapper.deleteBatchIds(idList));
     }
+
     /**
+     * @return boolean
      * @Author zehao
      * @Description //TODO 保存电影信息
      * @Date 21:04 2020/5/26/026
      * @Param [movieEntity]
-     * @return boolean
      **/
     @Override
-    public boolean save(MovieEntity movieEntity){
+    public boolean save(MovieEntity movieEntity) {
         movieEntity.setCreateTime(new Date());
-        if(redisService.isExposeConnection()){
-            //删除缓存中的数据
-            redisService.delKeys(this.getMatchRedisPreKey());
-        }
-
+        //删除缓存中的数据
+        redisService.delKeys(this.getMatchRedisPreKey());
         return this.retBool(this.baseMapper.insert(movieEntity));
     }
 
     @Override
-    public boolean updateById(MovieEntity movieEntity){
-        if(movieEntity.getType().isEmpty()){
+    public boolean updateById(MovieEntity movieEntity) {
+        if (movieEntity.getType().isEmpty()) {
             movieEntity.setType(null);
         }
-        if(movieEntity.getLanguage().isEmpty()){
+        if (movieEntity.getLanguage().isEmpty()) {
             movieEntity.setLanguage(null);
         }
         //删除缓存中的数据
-        if(redisService.isExposeConnection()){
-            //删除缓存中的数据
-            redisService.delKeys(this.getMatchRedisPreKey());
-        }
+        redisService.delKeys(this.getMatchRedisPreKey());
 
         return this.retBool(this.baseMapper.updateById(movieEntity));
     }
 
-    private String getMatchRedisPreKey(){
-        return "*"+REDIS_DATABASE + ":" +
-                REDIS_KEY_MOVIE+":"+REDIS_KEY_RESOURCE_LIST+":*";
+    private String getMatchRedisPreKey() {
+        return "*" + REDIS_DATABASE + ":" +
+                REDIS_KEY_MOVIE + ":" + REDIS_KEY_RESOURCE_LIST + ":*";
     }
 }

@@ -31,6 +31,10 @@ public class UserEntity implements Serializable {
      */
     private String password;
     /**
+     * 随机字符
+     **/
+    private String salt;
+    /**
      * 创建时间
      */
     private Date createTime;
@@ -165,12 +169,21 @@ public class UserEntity implements Serializable {
         this.image = image;
     }
 
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
+    }
+
     @Override
     public String toString() {
         return "UserEntity{" +
                 "id=" + id +
                 ", userName='" + userName + '\'' +
                 ", password='" + password + '\'' +
+                ", salt='" + salt + '\'' +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
                 ", phone='" + phone + '\'' +

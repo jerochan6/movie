@@ -2,6 +2,9 @@ package cn.hstc.recommend.service.impl;
 
 import cn.hstc.recommend.exception.RRException;
 import cn.hstc.recommend.utils.*;
+import org.apache.commons.lang.RandomStringUtils;
+import org.apache.shiro.authc.SimpleAuthenticationInfo;
+import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -67,13 +70,19 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
 
     @Override
     public boolean save(UserEntity userEntity){
-
+        //设置创建时间
         userEntity.setCreateTime(new Date());
+        //验证格式
         String result = this.REXValidate(userEntity);
 
         if(result != null){
             throw new RRException(result);
         }
+        //sha256加密
+        String salt = RandomStringUtils.randomAlphanumeric(20);
+        userEntity.setSalt(salt);
+        userEntity.setPassword(ShiroUtils.sha256(userEntity.getPassword(), userEntity.getSalt()));
+
         return this.retBool(this.baseMapper.insert(userEntity));
     }
     private String REXValidate(UserEntity userEntity){

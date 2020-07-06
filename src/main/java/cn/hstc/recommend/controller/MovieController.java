@@ -9,8 +9,7 @@ import java.util.UUID;
 
 import cn.hstc.recommend.interceptor.PassToken;
 import cn.hstc.recommend.interceptor.UserAdminToken;
-import cn.hstc.recommend.utils.Constant;
-import cn.hstc.recommend.utils.UploadUtils;
+import cn.hstc.recommend.utils.*;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.hstc.recommend.entity.MovieEntity;
 import cn.hstc.recommend.service.MovieService;
-import cn.hstc.recommend.utils.PageUtils;
-import cn.hstc.recommend.utils.Result;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletRequest;
@@ -139,4 +136,6 @@ public class MovieController {
         System.out.println(filePath + "/" + fileName);
         return new Result().ok(UploadUtils.IMG_PATH_PREFIX+"/"+fileName);
     }
+
+
 }
