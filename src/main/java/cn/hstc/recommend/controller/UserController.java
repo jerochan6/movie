@@ -8,6 +8,7 @@ import cn.hstc.recommend.interceptor.UserAdminToken;
 import cn.hstc.recommend.interceptor.UserLoginToken;
 import cn.hstc.recommend.utils.Constant;
 import io.swagger.annotations.Api;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -43,6 +44,7 @@ public class UserController {
      */
     @UserAdminToken
     @RequestMapping("/listPage")
+    @RequiresPermissions("user:list")
     public Result listPage(@RequestParam Map<String, Object> params){
 
         PageUtils page = userService.queryPage(params);
@@ -55,6 +57,7 @@ public class UserController {
      */
     @UserLoginToken
     @RequestMapping("/info/{id}")
+    @RequiresPermissions("user:info")
     public Result info(@PathVariable("id") Integer id){
         //用户只可以查看自己的信息，管理员可以查看所有用户的信息
         if(Constant.currentId != Constant.SUPER_ADMIN){
@@ -69,6 +72,7 @@ public class UserController {
      * 保存
      */
     @RequestMapping("/save")
+    @RequiresPermissions("user:save")
     public Result save(@RequestBody UserEntity user){
 
         userService.save(user);
@@ -81,6 +85,7 @@ public class UserController {
      */
     @UserLoginToken
     @RequestMapping("/update")
+    @RequiresPermissions("user:update")
     public Result update(@RequestBody UserEntity user){
 
         userService.updateById(user);
@@ -92,6 +97,7 @@ public class UserController {
      */
     @UserAdminToken
     @RequestMapping("/delete")
+    @RequiresPermissions("user:delete")
     public Result delete(@RequestBody Integer[] ids){
         userService.removeByIds(Arrays.asList(ids));
 
@@ -103,7 +109,7 @@ public class UserController {
      */
     @PassToken
     @RequestMapping("/login")
-    public Result login(@RequestParam String userName,String password){
+    public Result login(String userName,String password){
         return  userService.loginValidate(userName,password);
     }
 
@@ -115,4 +121,8 @@ public class UserController {
 //    public boolean isLogin(){
 //        return  true;
 //    }
+    @RequestMapping("/test")
+    public void test(){
+        System.out.println("test.........................");
+    }
 }

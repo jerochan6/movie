@@ -22,7 +22,7 @@ spring:
     time-zone: GMT+8
     date-format: yyyy-MM-dd HH:mm:ss
   resources:
-    static-locations: classpath:/static/
+    static-locations: classpath:/
   redis:
     host: localhost # Redis服务器地址
     database: 0 # Redis数据库索引（默认为0）
@@ -60,3 +60,4 @@ redis:
     movieResourceList: 'movieResourceList'
   expire:
     common: 86400 # 24小时
+  open: false  # 是否开启redis缓存  true开启   false关闭

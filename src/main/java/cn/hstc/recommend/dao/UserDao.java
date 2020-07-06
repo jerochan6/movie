@@ -4,6 +4,8 @@ import cn.hstc.recommend.entity.UserEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 /**
  * 
  * 
@@ -13,5 +15,10 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface UserDao extends BaseMapper<UserEntity> {
-	
+
+    /**
+     * 查询用户的所有权限
+     * @param userId  用户ID
+     */
+    List<String> queryAllPerms(Integer userId);
 }
