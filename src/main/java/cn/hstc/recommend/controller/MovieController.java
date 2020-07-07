@@ -12,6 +12,7 @@ import cn.hstc.recommend.interceptor.UserAdminToken;
 import cn.hstc.recommend.utils.*;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.swagger.annotations.Api;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -84,6 +85,7 @@ public class MovieController {
      */
     @UserAdminToken
     @RequestMapping("/update")
+    @RequiresPermissions("movie:update")
     public Result update(@RequestBody MovieEntity movie){
 
         movieService.updateById(movie);

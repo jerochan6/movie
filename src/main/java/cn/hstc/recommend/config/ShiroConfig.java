@@ -107,6 +107,8 @@ public class ShiroConfig {
         Map<String, String> filterChainDefinitionMap  = new LinkedHashMap<>();
 //        //anon:无参，开放权限，可以理解为匿名用户或游客
         filterChainDefinitionMap.put("/user/login", "anon");
+        filterChainDefinitionMap.put("/movie/listPage", "anon");
+        filterChainDefinitionMap.put("/movie/info", "anon");
 //        //其余接口一律拦截
 //        //主要这行代码必须放在所有权限设置的最后，不然会导致所有 url 都被拦截
 //        //authc:无参，需要认证

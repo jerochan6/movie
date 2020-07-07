@@ -1,6 +1,7 @@
 package cn.hstc.recommend.exception;
 
 import cn.hstc.recommend.utils.Result;
+import org.apache.shiro.authz.UnauthorizedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DuplicateKeyException;
@@ -9,7 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 /**
- * 异常处理器
+ * 自定义异常处理器
  *
  * @author Zero.
  */
@@ -33,7 +34,16 @@ public class RRExceptionHandler {
 		return new Result().error("数据库中已存在该记录");
 	}
 
-
+	/**
+	 * 处理自定义异常UnauthorizedException，改变其返回格式
+	 */
+	@ExceptionHandler(UnauthorizedException.class)
+	public Result handleUnauthorizedException(UnauthorizedException e){
+		Result r = new Result();
+		logger.error(e.getMessage());
+		r.error(500,"您没有该权限，请联系管理员获取！");
+		return r;
+	}
 
 
 	@ExceptionHandler(Exception.class)
