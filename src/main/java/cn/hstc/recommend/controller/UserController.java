@@ -45,6 +45,7 @@ public class UserController {
      */
     @UserAdminToken
     @RequestMapping("/listPage")
+    @RequiresPermissions("user:list")
     public Result listPage(@RequestParam Map<String, Object> params){
 
         PageUtils page = userService.queryPage(params);

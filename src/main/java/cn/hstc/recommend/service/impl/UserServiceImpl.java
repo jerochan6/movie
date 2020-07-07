@@ -2,11 +2,7 @@ package cn.hstc.recommend.service.impl;
 
 import cn.hstc.recommend.exception.RRException;
 import cn.hstc.recommend.utils.*;
-import org.apache.commons.lang.RandomStringUtils;
-import org.apache.shiro.authc.*;
-import org.apache.shiro.subject.Subject;
-import org.apache.shiro.util.ByteSource;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.shiro.crypto.hash.SimpleHash;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -46,34 +42,23 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
         if (null == userEntity) {
             return new Result().error("该账号未注册，请进行注册！");
         }
-        //验证账号和密码是否正确
+
 //        if (userEntity.getUserName().equals(userName) &&
 //                userEntity.getPassword().equals(password)) {
-
-        //登录成功，保存token
-
+        //我的密码是使用uuid作为盐值加密的，所以这里登陆时候还需要做一次对比
+        SimpleHash simpleHash = new SimpleHash("MD5", password,  userEntity.getSalt(),
+                1024);
+        if(!simpleHash.toHex().equals(userEntity.getPassword())){
+            return new Result().error("密码不正确");
+        }
         String token = tokenHelp.getToken(userEntity);
         Result result = new Result<>();
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("token", token);
         map.put("user", userEntity);
-
-//        try {
-//            Subject subject = ShiroUtils.getSubject();
-//            UsernamePasswordToken token2 = new UsernamePasswordToken(userName, password);
-//            subject.login(token2);
-//        } catch (UnknownAccountException e) {
-//            return new Result().error(e.getMessage());
-//        } catch (IncorrectCredentialsException e) {
-//            return new Result().error("账号或密码不正确!");
-//        } catch (LockedAccountException e) {
-//            return new Result().error("账号已被锁定,请联系管理员!");
-//        } catch (AuthenticationException e) {
-//            e.printStackTrace();
-//            return new Result().error("账户验证失败!");
-//        }
-
         return result.ok(map);
+
+
 //        }
 //        return new Result().error("登录失败，请检查账号和密码！");
     }
@@ -86,7 +71,9 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
         if (result != null) {
             throw new RRException(result);
         }
-        return this.retBool(this.baseMapper.updateById(userEntity));
+        //获取sha256加密后的user
+        UserEntity shiroUser = ShiroUtils.getShiroUser(userEntity);
+        return this.retBool(this.baseMapper.updateById(shiroUser));
     }
 
     @Override
@@ -99,15 +86,16 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
         if (result != null) {
             throw new RRException(result);
         }
-        //sha256加密
-        String salt = RandomStringUtils.randomAlphanumeric(20);
-        userEntity.setSalt(salt);
-        userEntity.setPassword(ShiroUtils.sha256(userEntity.getPassword(), userEntity.getSalt()));
+        //获取sha256加密后的user
+        UserEntity shiroUser = ShiroUtils.getShiroUser(userEntity);
 
-        return this.retBool(this.baseMapper.insert(userEntity));
+
+        return this.retBool(this.baseMapper.insert(shiroUser));
     }
 
     private String REXValidate(UserEntity userEntity) {
+
+
 
         if (null != userEntity.getUserName()) {
             String username = userEntity.getUserName();
@@ -117,9 +105,19 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
             //检查是否已存在该账户
             UserEntity user = this.baseMapper.selectOne(new QueryWrapper<UserEntity>()
                     .eq("user_name", userEntity.getUserName()));
-            if (user != null) {
-                return "该用户名已存在";
+
+            if(user != null){
+                if (userEntity.getId() == null) {
+                    return "该用户名已存在";
+                }
+                if(null != userEntity.getId() && !userEntity.getId().equals(user.getId())){
+                    if(user.getUserName().equals(userEntity.getUserName())){
+                        return "该用户名已存在";
+                    }
+                }
             }
+
+
         }
         if (null != userEntity.getPassword()) {
             String password = userEntity.getPassword();
@@ -135,9 +133,18 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
             //检查手机号是否已注册
             UserEntity user = this.baseMapper.selectOne(new QueryWrapper<UserEntity>()
                     .eq("phone", userEntity.getPhone()));
-            if (user != null) {
-                return "该手机号已注册";
+            if(user != null){
+                if ( userEntity.getId() == null) {
+                    return "该手机号已注册";
+                }
+                if(null != userEntity.getId() && !userEntity.getId().equals(user.getId())){
+                    if(user.getPhone().equals(userEntity.getPhone())){
+                        return "该手机号已注册";
+                    }
+                }
             }
+
+
         }
         return null;
     }

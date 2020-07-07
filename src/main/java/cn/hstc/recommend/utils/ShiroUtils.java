@@ -10,10 +10,14 @@ package cn.hstc.recommend.utils;
 
 import cn.hstc.recommend.entity.UserEntity;
 import cn.hstc.recommend.exception.RRException;
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
+
+import java.util.Date;
+import java.util.UUID;
 
 /**
  * Shiro工具类
@@ -69,5 +73,14 @@ public class ShiroUtils {
         getSession().removeAttribute(key);
         return kaptcha.toString();
     }
+
+    public static UserEntity getShiroUser( UserEntity userEntity){
+        String salt = UUID.randomUUID().toString().replaceAll("-","");
+        SimpleHash simpleHash = new SimpleHash("MD5", userEntity.getPassword(), salt, 1024);
+        userEntity.setPassword(simpleHash.toHex());
+        userEntity.setSalt(salt);
+        return userEntity;
+    }
+
 
 }

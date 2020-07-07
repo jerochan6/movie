@@ -28,13 +28,11 @@ public class TokenHelp {
     @Autowired
     private UserService userService;
 
-    public boolean tokenValidate(String token,boolean isAdmin){
+    public boolean tokenValidate(String token){
             // 执行认证
             if (token == null) {
                 throw new RRException("无token，请重新登录");
             }
-
-
             // 获取 token 中的 user id
             String userId;
             try {
@@ -47,25 +45,20 @@ public class TokenHelp {
             } catch (JWTDecodeException j) {
                 throw new RRException("401");
             }
-        //改变当前登录Id
-        Constant.currentId = Integer.parseInt(userId);
+            //改变当前登录Id
+            Constant.currentId = Integer.parseInt(userId);
             UserEntity user = userService.getById(userId);
             //验证是否是管理员账号
-            if(isAdmin){
-                if(Integer.parseInt(userId) != Constant.SUPER_ADMIN){
-                    throw new RRException("该操作需要有管理员权限");
-                }
-            }
             if (user == null) {
                 throw new RRException("用户不存在，请重新登录");
             }
-            // 验证 token
-            JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(user.getPassword())).build();
-            try {
-                jwtVerifier.verify(token);
-            } catch (JWTVerificationException e) {
-                throw new RRException("401");
-            }
+//            // 验证 token
+//            JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(user.getPassword())).build();
+//            try {
+//                jwtVerifier.verify(token);
+//            } catch (JWTVerificationException e) {
+//                throw new RRException("401");
+//            }
             return true;
     }
 

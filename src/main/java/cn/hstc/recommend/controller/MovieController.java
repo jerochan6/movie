@@ -74,6 +74,7 @@ public class MovieController {
      */
     @UserAdminToken
     @RequestMapping("/save")
+    @RequiresPermissions("movie:save")
     public Result save(@RequestBody MovieEntity movie){
         movieService.save(movie);
 
@@ -98,6 +99,7 @@ public class MovieController {
      */
     @UserAdminToken
     @RequestMapping("/delete")
+    @RequiresPermissions("movie:delete")
     public Result delete(@RequestBody Integer[] ids,HttpServletRequest request){
         //获取当前访问的路径
         String parentDir = request.getServletContext().getRealPath("/");

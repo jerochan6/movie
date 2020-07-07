@@ -25,7 +25,8 @@ import java.util.*;
 
 /**
  * @ClassName UserRealm
- * @Description TODOShiro从从Realm获取安全数据（如用户、角色、权限）
+ * @Description TODO
+ * Shiro从从Realm获取安全数据（如用户、角色、权限）
  * ，就是说SecurityManager要验证用户身份，那么它需要从Realm获取相应
  * 的用户进行比较以确定用户身份是否合法；也需要从Realm得到用户相应的角色/权限进行验证用户是否能进行操作；
  * 可以把Realm看成DataSource，即安全数据源。Realm主要有两个方法：
@@ -101,14 +102,14 @@ public class UserRealm extends AuthorizingRealm {
         String token = (String) authcToken.getCredentials();
         UserEntity userEntity = tokenHelp.getUser(token);
         logger.info("对用户[{}]进行登录验证..验证开始",userEntity.getUserName());
-        //查询用户信息
-        UserEntity user = userDao.selectOne(new QueryWrapper<UserEntity>().
-                eq("user_name", userEntity.getUserName()));
+//        //查询用户信息
+//        UserEntity user = userDao.selectOne(new QueryWrapper<UserEntity>().
+//                eq("user_name", userEntity.getUserName()));
 
-        //账号不存在
-        if(user == null) {
-            throw new UnknownAccountException("账号或密码不正确");
-        }
+//        //账号不存在
+//        if(user == null) {
+//            throw new UnknownAccountException("账号或密码不正确");
+//        }
 
 
         SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(token,token,"UserRealm");
