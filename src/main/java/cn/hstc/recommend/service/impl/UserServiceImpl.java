@@ -58,19 +58,20 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
         map.put("token", token);
         map.put("user", userEntity);
 
-        try {
-            Subject subject = ShiroUtils.getSubject();
-            UsernamePasswordToken token2 = new UsernamePasswordToken(userName, password);
-            subject.login(token2);
-        } catch (UnknownAccountException e) {
-            return new Result().error(e.getMessage());
-        } catch (IncorrectCredentialsException e) {
-            return new Result().error("账号或密码不正确!");
-        } catch (LockedAccountException e) {
-            return new Result().error("账号已被锁定,请联系管理员!");
-        } catch (AuthenticationException e) {
-            return new Result().error("账户验证失败!");
-        }
+//        try {
+//            Subject subject = ShiroUtils.getSubject();
+//            UsernamePasswordToken token2 = new UsernamePasswordToken(userName, password);
+//            subject.login(token2);
+//        } catch (UnknownAccountException e) {
+//            return new Result().error(e.getMessage());
+//        } catch (IncorrectCredentialsException e) {
+//            return new Result().error("账号或密码不正确!");
+//        } catch (LockedAccountException e) {
+//            return new Result().error("账号已被锁定,请联系管理员!");
+//        } catch (AuthenticationException e) {
+//            e.printStackTrace();
+//            return new Result().error("账户验证失败!");
+//        }
 
         return result.ok(map);
 //        }

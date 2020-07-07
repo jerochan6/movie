@@ -49,6 +49,7 @@ public class Constant {
      */
     public static final String DESC = "desc";
 
+    public static final String ACESSTOKEN = "token";
     /**
      * 手机号码正则
      **/

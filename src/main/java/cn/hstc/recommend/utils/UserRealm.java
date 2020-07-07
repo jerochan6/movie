@@ -4,6 +4,7 @@ import cn.hstc.recommend.dao.MenuDao;
 import cn.hstc.recommend.dao.UserDao;
 import cn.hstc.recommend.entity.MenuEntity;
 import cn.hstc.recommend.entity.UserEntity;
+import cn.hstc.recommend.service.impl.JwtToken;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authc.*;
@@ -34,21 +35,33 @@ import java.util.*;
  * @Date 2020/7/6 11:38
  * @Version 1.0
  **/
-@Component
+@Component("UserRealm")
 public class UserRealm extends AuthorizingRealm {
     private static final Logger logger = LoggerFactory.getLogger(UserRealm.class);
     @Autowired
-    UserDao userDao;
+    public UserDao userDao;
 
     @Autowired
     MenuDao menuDao;
+
+    @Autowired
+    TokenHelp tokenHelp;
+
+    @Override
+    public boolean supports(AuthenticationToken token) {
+        return token instanceof JwtToken;
+    }
+
+
     /**
      * 授权(验证权限时调用)
      * 这个方法就会从数据库中读取我们所需要的信息，最后封装成SimpleAuthorizationInfo返回去
      */
     @Override
-    protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-        UserEntity user = (UserEntity)principals.getPrimaryPrincipal();
+    protected AuthorizationInfo doGetAuthorizationInfo(@org.jetbrains.annotations.NotNull PrincipalCollection principals) {
+        //获取用户权限
+        String token = (String) principals.getPrimaryPrincipal();
+        UserEntity user = tokenHelp.getUser(token);
         Integer userId = user.getId();
 //
         List<String> permsList;
@@ -84,28 +97,30 @@ public class UserRealm extends AuthorizingRealm {
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(
             AuthenticationToken authcToken) throws AuthenticationException {
-        UsernamePasswordToken token = (UsernamePasswordToken)authcToken;
-        logger.info("对用户[{}]进行登录验证..验证开始",token.getUsername());
+        // 校验token有效性
+        String token = (String) authcToken.getCredentials();
+        UserEntity userEntity = tokenHelp.getUser(token);
+        logger.info("对用户[{}]进行登录验证..验证开始",userEntity.getUserName());
         //查询用户信息
         UserEntity user = userDao.selectOne(new QueryWrapper<UserEntity>().
-                eq("user_name", token.getUsername()));
+                eq("user_name", userEntity.getUserName()));
 
         //账号不存在
         if(user == null) {
             throw new UnknownAccountException("账号或密码不正确");
         }
 
-        SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(user, user.getPassword(),
-                ByteSource.Util.bytes(user.getSalt()), user.getUserName());
+
+        SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(token,token,"UserRealm");
 
         return info;
     }
 
-    @Override
-    public void setCredentialsMatcher(CredentialsMatcher credentialsMatcher) {
-        HashedCredentialsMatcher shaCredentialsMatcher = new HashedCredentialsMatcher();
-        shaCredentialsMatcher.setHashAlgorithmName(ShiroUtils.hashAlgorithmName);
-        shaCredentialsMatcher.setHashIterations(ShiroUtils.hashIterations);
-        super.setCredentialsMatcher(shaCredentialsMatcher);
-    }
+//    @Override
+//    public void setCredentialsMatcher(CredentialsMatcher credentialsMatcher) {
+//        HashedCredentialsMatcher shaCredentialsMatcher = new HashedCredentialsMatcher();
+//        shaCredentialsMatcher.setHashAlgorithmName(ShiroUtils.hashAlgorithmName);
+//        shaCredentialsMatcher.setHashIterations(ShiroUtils.hashIterations);
+//        super.setCredentialsMatcher(shaCredentialsMatcher);
+//    }
 }

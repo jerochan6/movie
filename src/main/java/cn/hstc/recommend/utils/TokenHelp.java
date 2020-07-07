@@ -77,4 +77,10 @@ public class TokenHelp {
                 .sign(Algorithm.HMAC256(user.getPassword()));
         return token;
     }
+
+    public UserEntity getUser(String token){
+        String userId = JWT.decode(token).getAudience().get(0);
+        UserEntity user = userService.getById(userId);
+        return user;
+    }
 }

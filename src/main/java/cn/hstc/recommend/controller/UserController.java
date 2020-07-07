@@ -7,6 +7,7 @@ import cn.hstc.recommend.interceptor.PassToken;
 import cn.hstc.recommend.interceptor.UserAdminToken;
 import cn.hstc.recommend.interceptor.UserLoginToken;
 import cn.hstc.recommend.utils.Constant;
+import cn.hstc.recommend.utils.ShiroUtils;
 import io.swagger.annotations.Api;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +45,6 @@ public class UserController {
      */
     @UserAdminToken
     @RequestMapping("/listPage")
-    @RequiresPermissions("user:list")
     public Result listPage(@RequestParam Map<String, Object> params){
 
         PageUtils page = userService.queryPage(params);
@@ -60,11 +60,10 @@ public class UserController {
     @RequiresPermissions("user:info")
     public Result info(@PathVariable("id") Integer id){
         //用户只可以查看自己的信息，管理员可以查看所有用户的信息
-        if(Constant.currentId != Constant.SUPER_ADMIN){
-            UserEntity user = userService.getById(Constant.currentId);
-            return new Result<UserEntity>().ok(user);
-        }
-        UserEntity user = userService.getById(id);
+//        if(ShiroUtils.getUserId() != Constant.SUPER_ADMIN){
+            UserEntity user = userService.getById(id);
+//        }
+//        UserEntity user = userService.getById(id);
         return new Result<UserEntity>().ok(user);
     }
 
