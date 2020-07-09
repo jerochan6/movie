@@ -13,5 +13,15 @@
         <result property="createTime" column="create_time"/>
     </resultMap>
 
+    <select id="selectAllRole" resultMap="roleMap">
+        select r.id,r.name,r.parent_id,r.create_id,r.remark,r.create_time,u.user_name as createName
+        ,r2.name as parentName
+        from role r
+        left join user u on u.id = r.create_id
+        left join role r2 on r.parent_id = r2.id
+        <where>
+            ${ew.sqlSegment}
+        </where>
+    </select>
 
 </mapper>

@@ -89,6 +89,7 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
 //        Subject subject = ShiroUtils.getSubject();
 //        subject.login(jwtToken);
         getSubject(request, response).login(jwtToken);
+        Constant.currentId = userEntity.getId();
         logger.info("JwtFilter-->>>用户[{}]验证成功",userEntity.getUserName());
         return true;
     }

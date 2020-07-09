@@ -1,8 +1,12 @@
 package cn.hstc.recommend.dao;
 
 import cn.hstc.recommend.entity.RoleEntity;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * 
@@ -13,5 +17,6 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface RoleDao extends BaseMapper<RoleEntity> {
-	
+
+    List<RoleEntity> selectAllRole(@Param("ew") Wrapper wrapper);
 }

@@ -14,7 +14,9 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.session.Session;
+import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.Subject;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 import java.util.UUID;
@@ -29,6 +31,8 @@ public class ShiroUtils {
     /**  循环次数 */
     public final static int hashIterations = 16;
 
+    private static TokenHelp tokenHelp = new TokenHelp();
+
     public static String sha256(String password, String salt) {
         return new SimpleHash(hashAlgorithmName, password, salt, hashIterations).toString();
     }
@@ -42,11 +46,13 @@ public class ShiroUtils {
     }
 
     public static UserEntity getUserEntity() {
-        return (UserEntity)SecurityUtils.getSubject().getPrincipal();
+        return (UserEntity) getSubject().getPrincipal();
     }
 
     public static Integer getUserId() {
-        return getUserEntity().getId();
+        UserEntity userEntity = getUserEntity();
+
+        return userEntity.getId();
     }
 
     public static void setSessionAttribute(Object key, Object value) {
@@ -76,7 +82,7 @@ public class ShiroUtils {
 
     public static UserEntity getShiroUser( UserEntity userEntity){
         String salt = UUID.randomUUID().toString().replaceAll("-","");
-        SimpleHash simpleHash = new SimpleHash("MD5", userEntity.getPassword(), salt, 1024);
+        SimpleHash simpleHash = new SimpleHash("MD5", userEntity.getPassword(), salt, Constant.HASHINTERATIONS);
         userEntity.setPassword(simpleHash.toHex());
         userEntity.setSalt(salt);
         return userEntity;

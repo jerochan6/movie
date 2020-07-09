@@ -43,11 +43,9 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
             return new Result().error("该账号未注册，请进行注册！");
         }
 
-//        if (userEntity.getUserName().equals(userName) &&
-//                userEntity.getPassword().equals(password)) {
         //我的密码是使用uuid作为盐值加密的，所以这里登陆时候还需要做一次对比
         SimpleHash simpleHash = new SimpleHash("MD5", password,  userEntity.getSalt(),
-                1024);
+                Constant.HASHINTERATIONS);
         if(!simpleHash.toHex().equals(userEntity.getPassword())){
             return new Result().error("密码不正确");
         }
@@ -57,14 +55,11 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
         map.put("token", token);
         map.put("user", userEntity);
         return result.ok(map);
-
-
-//        }
-//        return new Result().error("登录失败，请检查账号和密码！");
     }
 
     @Override
     public boolean updateById(UserEntity userEntity) {
+
         userEntity.setId(Constant.currentId);
         userEntity.setUpdateTime(new Date());
         String result = this.REXValidate(userEntity);

@@ -1,6 +1,7 @@
 package cn.hstc.recommend.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,9 +36,9 @@ public class MenuController {
      */
     @RequestMapping("/list")
     public Result list(@RequestParam Map<String, Object> params){
-        PageUtils page = menuService.queryPage(params);
+        List<MenuEntity> list = menuService.list();
 
-        return new Result().ok(page);
+        return new Result().ok(list);
     }
 
 
