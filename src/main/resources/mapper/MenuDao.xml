@@ -14,5 +14,21 @@
         <result property="type" column="type"/>
     </resultMap>
 
+    <select id="queryMenuNames" resultType="String">
+        select menu.name from menu
+        <where>
+            <where>
+                ${ew.sqlSegment}
+            </where>
+        </where>
+    </select>
 
+    <select id="queryMenuIds" resultType="Integer">
+        select menu.id from menu
+        <where>
+            <where>
+                ${ew.sqlSegment}
+            </where>
+        </where>
+    </select>
 </mapper>

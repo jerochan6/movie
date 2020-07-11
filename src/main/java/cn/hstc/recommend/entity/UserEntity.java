@@ -1,12 +1,16 @@
 package cn.hstc.recommend.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author Zero
@@ -72,6 +76,29 @@ public class UserEntity implements Serializable {
      * 头像
      */
     private String image;
+
+    /**
+     * 权限id集合
+     **/
+    @TableField(exist = false)
+    private Collection<Integer> menuIds;
+    /**
+     * 权限集合
+     **/
+    @TableField(exist = false)
+    private Collection<String> menuNames;
+
+    /**
+     * 角色Id集合
+     **/
+    @TableField(exist = false)
+    private Collection<Integer> roleIds;
+
+    /**
+     * 角色名集合
+     **/
+    @TableField(exist = false)
+    private Collection<String> roleNames;
 
     public Integer getId() {
         return id;
@@ -175,6 +202,38 @@ public class UserEntity implements Serializable {
 
     public void setSalt(String salt) {
         this.salt = salt;
+    }
+
+    public Collection<Integer> getMenuIds() {
+        return menuIds;
+    }
+
+    public void setMenuIds(Collection<Integer> menuIds) {
+        this.menuIds = menuIds;
+    }
+
+    public Collection<String> getMenuNames() {
+        return menuNames;
+    }
+
+    public void setMenuNames(Collection<String> menuNames) {
+        this.menuNames = menuNames;
+    }
+
+    public Collection<Integer> getRoleIds() {
+        return roleIds;
+    }
+
+    public void setRoleIds(Collection<Integer> roleIds) {
+        this.roleIds = roleIds;
+    }
+
+    public Collection<String> getRoleNames() {
+        return roleNames;
+    }
+
+    public void setRoleNames(Collection<String> roleNames) {
+        this.roleNames = roleNames;
     }
 
     @Override

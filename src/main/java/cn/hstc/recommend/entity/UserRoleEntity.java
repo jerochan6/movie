@@ -17,20 +17,31 @@ import java.util.Date;
 public class UserRoleEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	@TableId
+	private Integer id;
 	/**
 	 * 
 	 */
-	@TableId
+
 	private Integer userId;
 	/**
 	 * 
 	 */
 	private Integer roleId;
 
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
 	@Override
 	public String toString() {
 		return "UserRoleEntity{" +
-				"userId=" + userId +
+				"id=" + id +
+				", userId=" + userId +
 				", roleId=" + roleId +
 				'}';
 	}

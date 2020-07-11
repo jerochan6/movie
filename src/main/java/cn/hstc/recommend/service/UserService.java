@@ -27,5 +27,11 @@ public interface UserService extends IService<UserEntity> {
     @Override
     boolean save(UserEntity userEntity);
 //   String getToken(UserEntity user);
+
+    List<String> getAllPermsNames(Integer userId);
+
+    List<Integer> getAllPermsIds(Integer userId);
+
+    UserEntity getById(Integer userId);
 }
 

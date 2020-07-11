@@ -29,4 +29,23 @@
         </where>
 	</select>
 
+    <!-- 查询用户的所有权限名 -->
+    <select id="queryAllPermsNames" resultType="string" parameterType="int">
+        SELECT m.name FROM user_role ur
+        LEFT JOIN role_menu rm ON ur.role_id = rm.role_id
+        LEFT JOIN menu m ON m.id = rm.menu_id
+        <where>
+            ur.user_id = #{userId}
+        </where>
+    </select>
+
+    <!-- 查询用户的所有权限ID -->
+    <select id="queryAllPermsIds" resultType="Integer" parameterType="int">
+        SELECT m.id FROM user_role ur
+        LEFT JOIN role_menu rm ON ur.role_id = rm.role_id
+        LEFT JOIN menu m ON m.id = rm.menu_id
+        <where>
+            ur.user_id = #{userId}
+        </where>
+    </select>
 </mapper>

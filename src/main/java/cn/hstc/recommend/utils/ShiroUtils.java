@@ -10,6 +10,9 @@ package cn.hstc.recommend.utils;
 
 import cn.hstc.recommend.entity.UserEntity;
 import cn.hstc.recommend.exception.RRException;
+import cn.hstc.recommend.service.UserService;
+import cn.hstc.recommend.service.impl.UserServiceImpl;
+import org.apache.catalina.User;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.crypto.hash.SimpleHash;
@@ -17,6 +20,7 @@ import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.UUID;
@@ -25,13 +29,19 @@ import java.util.UUID;
  * Shiro工具类
  *
  */
+@Component
 public class ShiroUtils {
+
+    @Autowired
+    TokenHelp tokenHelp;
+
     /**  加密算法 */
     public final static String hashAlgorithmName = "SHA-256";
     /**  循环次数 */
     public final static int hashIterations = 16;
 
-    private static TokenHelp tokenHelp = new TokenHelp();
+
+
 
     public static String sha256(String password, String salt) {
         return new SimpleHash(hashAlgorithmName, password, salt, hashIterations).toString();
@@ -45,11 +55,15 @@ public class ShiroUtils {
         return SecurityUtils.getSubject();
     }
 
-    public static UserEntity getUserEntity() {
-        return (UserEntity) getSubject().getPrincipal();
+    public  UserEntity getUserEntity() {
+
+        String token = getSubject().getPrincipals().toString();
+
+        UserEntity userEntity = tokenHelp.getUser(token);
+        return userEntity;
     }
 
-    public static Integer getUserId() {
+    public Integer getUserId() {
         UserEntity userEntity = getUserEntity();
 
         return userEntity.getId();

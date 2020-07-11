@@ -5,6 +5,7 @@
 
 	<!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="cn.hstc.recommend.entity.UserRoleEntity" id="userRoleMap">
+        <result property="id" column="id" />
         <result property="userId" column="user_id"/>
         <result property="roleId" column="role_id"/>
     </resultMap>

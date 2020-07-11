@@ -1,6 +1,7 @@
 package cn.hstc.recommend.service.impl;
 
 import cn.hstc.recommend.dao.UserRoleDao;
+import cn.hstc.recommend.entity.UserEntity;
 import cn.hstc.recommend.entity.UserRoleEntity;
 import cn.hstc.recommend.utils.Constant;
 import cn.hstc.recommend.utils.ShiroUtils;
@@ -25,6 +26,9 @@ public class RoleServiceImpl extends ServiceImpl<RoleDao, RoleEntity> implements
     @Autowired
     UserRoleDao userRoleDao;
 
+    @Autowired
+    ShiroUtils shiroUtils;
+
     private static List<Integer> allChildRolesIds = new ArrayList<Integer>();
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -39,16 +43,20 @@ public class RoleServiceImpl extends ServiceImpl<RoleDao, RoleEntity> implements
     @Override
     public List<RoleEntity> list(){
         QueryWrapper<RoleEntity> wrapper = new QueryWrapper<RoleEntity>();
+        //如果登录账号为非超级管理员账号，则根据该账号拥有的角色查询
         if(Constant.currentId != Constant.SUPER_ADMIN){
             List<UserRoleEntity> userRoleEntities = userRoleDao.selectList(new QueryWrapper<UserRoleEntity>()
                 .eq("user_id",Constant.currentId));
+            //如果该账号没有角色，则直接返回空集合
+            if(userRoleEntities.size() == 0){
+                return new ArrayList<>();
+            }
+            //封装角色id集合，用于查询所有角色信息
             List<Integer> roleIds = new ArrayList<>();
             for(UserRoleEntity userRoleEntity : userRoleEntities){
                 roleIds.add(userRoleEntity.getRoleId());
             }
-            if(userRoleEntities.size() == 0){
-                return new ArrayList<>();
-            }
+            //查询所有角色信息集合
             wrapper.in(roleIds.size()!=0,"r.id",roleIds);
             List<RoleEntity> roleEntities = this.baseMapper.selectAllRole(wrapper);
             //查询所有角色包括子角色
@@ -63,7 +71,6 @@ public class RoleServiceImpl extends ServiceImpl<RoleDao, RoleEntity> implements
                 }
                 allChildRolesIds = new ArrayList<>();
             }
-
             List<RoleEntity> allRoles = this.baseMapper.selectAllRole(new QueryWrapper<RoleEntity>().in(allRoleIds.size()!=0,"r.id",allRoleIds));
 
             return allRoles;

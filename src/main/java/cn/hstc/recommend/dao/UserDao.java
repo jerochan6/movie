@@ -21,4 +21,22 @@ public interface UserDao extends BaseMapper<UserEntity> {
      * @param userId  用户ID
      */
     List<String> queryAllPerms(Integer userId);
+
+    /**
+     * @Author zehao
+     * @Description //TODO 查询用户的所有权限名
+     * @Date 10:36 2020/7/10
+     * @Param [userId]
+     * @return java.util.List<java.lang.String>
+     **/
+    List<String> queryAllPermsNames(Integer userId);
+    
+    /**
+     * @Author zehao
+     * @Description //TODO 查询用户的所有权限Id
+     * @Date 10:37 2020/7/10
+     * @Param [userId]
+     * @return java.util.List<java.lang.Integer>
+     **/
+    List<Integer> queryAllPermsIds(Integer userId);
 }
