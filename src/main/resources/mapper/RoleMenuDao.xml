@@ -9,5 +9,4 @@
         <result property="menuId" column="menu_id"/>
     </resultMap>
 
-
 </mapper>

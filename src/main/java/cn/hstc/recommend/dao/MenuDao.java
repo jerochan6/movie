@@ -22,4 +22,8 @@ public interface MenuDao extends BaseMapper<MenuEntity> {
     List<String> queryMenuNames(@Param("ew") QueryWrapper wrapper);
 
     List<Integer> queryMenuIds(@Param("ew") QueryWrapper wrapper);
+
+    List<MenuEntity> queryAllMenuByUser(@Param("userId") Integer userId);
+
+    List<MenuEntity> queryMenuIdsByRoleId(@Param("roleId") Integer roleId);
 }

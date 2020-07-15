@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import cn.hstc.recommend.dao.UserDao;
+import cn.hstc.recommend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -52,6 +54,19 @@ public class MenuController {
         return new Result<MenuEntity>().ok(menu);
     }
 
+    /**
+     * @Author zehao
+     * @Description //TODO
+     * @Date 15:26 2020/7/12
+     * @Param
+     * @return
+     **/
+    @RequestMapping("/getByUser/{userId}")
+    public Result<List<MenuEntity>> getByUser(@PathVariable("userId") Integer userId){
+        List<MenuEntity> menus = menuService.getAllMenuByUser(userId);
+
+        return new Result<List<MenuEntity>>().ok(menus);
+    }
     /**
      * 保存
      */

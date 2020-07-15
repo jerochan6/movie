@@ -17,18 +17,32 @@
     <select id="queryMenuNames" resultType="String">
         select menu.name from menu
         <where>
-            <where>
                 ${ew.sqlSegment}
-            </where>
         </where>
     </select>
 
     <select id="queryMenuIds" resultType="Integer">
         select menu.id from menu
         <where>
-            <where>
                 ${ew.sqlSegment}
-            </where>
         </where>
+    </select>
+
+    <!-- 查询用户的所有权限 -->
+    <select id="queryAllMenuByUser" resultMap="menuMap" parameterType="int">
+        SELECT m.id,m.parent_id,m.name,m.url,m.icon FROM user_role ur
+        LEFT JOIN role_menu rm ON ur.role_id = rm.role_id
+        LEFT JOIN menu m ON m.id = rm.menu_id
+        <where>
+            ur.user_id = #{userId}
+        </where>
+    </select>
+
+    <select id="queryMenuIdsByRoleId" resultMap="menuMap" parameterType="int">
+        select menu.id,menu.name from menu
+        left join role_menu rm on menu.id = rm.menu_id
+            <where>
+                rm.role_id = #{roleId}
+            </where>
     </select>
 </mapper>

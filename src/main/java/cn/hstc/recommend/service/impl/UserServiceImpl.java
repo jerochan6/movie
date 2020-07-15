@@ -193,8 +193,6 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
                     }
                 }
             }
-
-
         }
         return null;
     }

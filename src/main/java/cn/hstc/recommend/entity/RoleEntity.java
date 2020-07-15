@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 
@@ -43,6 +44,9 @@ public class RoleEntity implements Serializable {
 	 * 
 	 */
 	private Date createTime;
+
+	@TableField(exist = false)
+	private List<Integer> menuIds;
 
 	@TableField(exist = false)
 	private String createName;
@@ -128,4 +132,11 @@ public class RoleEntity implements Serializable {
 		this.createName = crreateName;
 	}
 
+	public List<Integer> getMenuIds() {
+		return menuIds;
+	}
+
+	public void setMenuIds(List<Integer> menuIds) {
+		this.menuIds = menuIds;
+	}
 }

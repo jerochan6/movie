@@ -1,8 +1,10 @@
 package cn.hstc.recommend.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
+import cn.hstc.recommend.entity.MenuEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -46,9 +48,9 @@ public class RoleMenuController {
      */
     @RequestMapping("/info/{roleId}")
     public Result info(@PathVariable("roleId") Integer roleId){
-        RoleMenuEntity roleMenu = roleMenuService.getById(roleId);
+        List<MenuEntity> roleMenus = roleMenuService.getById(roleId);
 
-        return new Result<RoleMenuEntity>().ok(roleMenu);
+        return new Result<List<MenuEntity>>().ok(roleMenus);
     }
 
     /**
