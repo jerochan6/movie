@@ -41,6 +41,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
                 new Query<UserEntity>().getPage(params),
                 new QueryWrapper<UserEntity>()
         );
+        //在查到的用户列表中插入每个用户的权限和角色
         Set<Integer> menuIdsSet = new LinkedHashSet<>();
         for(UserEntity userEntity : page.getRecords()){
             List<Integer> menuIdList = this.getAllPermsIds(userEntity.getId());

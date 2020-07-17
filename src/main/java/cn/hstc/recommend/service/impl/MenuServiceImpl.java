@@ -1,5 +1,6 @@
 package cn.hstc.recommend.service.impl;
 
+import cn.hstc.recommend.dao.UserRoleDao;
 import cn.hstc.recommend.entity.UserRoleEntity;
 import cn.hstc.recommend.service.UserRoleService;
 import cn.hstc.recommend.utils.Constant;
@@ -26,6 +27,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuDao, MenuEntity> implements
 
     @Autowired
     private MenuService menuService;
+
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -54,6 +56,9 @@ public class MenuServiceImpl extends ServiceImpl<MenuDao, MenuEntity> implements
 
     @Override
     public List<MenuEntity> getMenuIdsByRoleId(Integer roleId){
+        if(roleId == Constant.SUPER_ADMIN){
+            return this.baseMapper.selectList(new QueryWrapper<>());
+        }
         return this.baseMapper.queryMenuIdsByRoleId(roleId);
     }
 }

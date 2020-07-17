@@ -1,5 +1,6 @@
 package cn.hstc.recommend.service.impl;
 
+import cn.hstc.recommend.entity.RoleEntity;
 import cn.hstc.recommend.service.RoleService;
 import cn.hstc.recommend.utils.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +59,12 @@ public class UserRoleServiceImpl extends ServiceImpl<UserRoleDao, UserRoleEntity
 
         List<String> roleNames = new ArrayList<>();
         for(UserRoleEntity userRoleEntity : roles){
-            roleNames.add(roleService.getById(userRoleEntity.getRoleId()).getName());
+            if(userRoleEntity.getRoleId() != null){
+                RoleEntity roleEntity = roleService.getById(userRoleEntity.getRoleId());
+                if(roleEntity != null){
+                    roleNames.add(roleEntity.getName());
+                }
+            }
         }
         return roleNames;
     }

@@ -6,6 +6,8 @@ import java.util.Map;
 
 import cn.hstc.recommend.dao.UserDao;
 import cn.hstc.recommend.service.UserService;
+import cn.hstc.recommend.utils.Constant;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,12 +35,25 @@ public class MenuController {
     @Autowired
     private MenuService menuService;
 
+    @Autowired
+    private UserService userService;
     /**
      * 列表
      */
     @RequestMapping("/list")
     public Result list(@RequestParam Map<String, Object> params){
+        if(Constant.currentId != Constant.SUPER_ADMIN){
+            List<Integer> menuIds = userService.getAllPermsIds(Constant.currentId);
+            if(menuIds == null){
+                return new Result().ok(null);
+            }
+            List<MenuEntity> menuEntities = menuService.list(new QueryWrapper<MenuEntity>()
+                    .in(menuIds != null,"id",menuIds));
+            return new Result().ok(menuEntities);
+
+        }
         List<MenuEntity> list = menuService.list();
+
 
         return new Result().ok(list);
     }
@@ -56,7 +71,7 @@ public class MenuController {
 
     /**
      * @Author zehao
-     * @Description //TODO
+     * @Description //TODO 根据用户查找该用户拥有的权限
      * @Date 15:26 2020/7/12
      * @Param
      * @return
@@ -64,6 +79,20 @@ public class MenuController {
     @RequestMapping("/getByUser/{userId}")
     public Result<List<MenuEntity>> getByUser(@PathVariable("userId") Integer userId){
         List<MenuEntity> menus = menuService.getAllMenuByUser(userId);
+
+        return new Result<List<MenuEntity>>().ok(menus);
+    }
+
+    /**
+     * @Author zehao
+     * @Description //TODO 根据角色查找该角色拥有的权限
+     * @Date 15:26 2020/7/12
+     * @Param
+     * @return
+     **/
+    @RequestMapping("/getByRole/{roleId}")
+    public Result<List<MenuEntity>> getByRole(@PathVariable("roleId") Integer roleId){
+        List<MenuEntity> menus = menuService.getMenuIdsByRoleId(roleId);
 
         return new Result<List<MenuEntity>>().ok(menus);
     }

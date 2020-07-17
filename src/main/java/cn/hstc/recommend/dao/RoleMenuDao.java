@@ -3,6 +3,7 @@ package cn.hstc.recommend.dao;
 import cn.hstc.recommend.entity.RoleMenuEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 
@@ -13,5 +14,6 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface RoleMenuDao extends BaseMapper<RoleMenuEntity> {
-	
+    @Override
+    int insert(RoleMenuEntity roleMenuEntity);
 }

@@ -21,5 +21,7 @@ public interface MenuService extends IService<MenuEntity> {
     List<MenuEntity> getAllMenuByUser(Integer userId);
 
     List<MenuEntity> getMenuIdsByRoleId(Integer roleId);
+
+
 }
 

@@ -36,8 +36,9 @@ public class RoleController {
      * 列表
      */
     @RequestMapping("/list")
-    @RequiresPermissions("user:list")
+    @RequiresPermissions("role:list")
     public Result list(@RequestParam Map<String, Object> params){
+
         List<RoleEntity> roleEntities = roleService.list();
 
         return new Result().ok(roleEntities);

@@ -1,8 +1,12 @@
 package cn.hstc.recommend.service.impl;
 
+import cn.hstc.recommend.dao.RoleMenuDao;
 import cn.hstc.recommend.dao.UserRoleDao;
+import cn.hstc.recommend.entity.RoleMenuEntity;
 import cn.hstc.recommend.entity.UserEntity;
 import cn.hstc.recommend.entity.UserRoleEntity;
+import cn.hstc.recommend.exception.RRException;
+import cn.hstc.recommend.service.RoleMenuService;
 import cn.hstc.recommend.utils.Constant;
 import cn.hstc.recommend.utils.ShiroUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +22,7 @@ import cn.hstc.recommend.utils.Query;
 import cn.hstc.recommend.dao.RoleDao;
 import cn.hstc.recommend.entity.RoleEntity;
 import cn.hstc.recommend.service.RoleService;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service("roleService")
@@ -29,6 +34,11 @@ public class RoleServiceImpl extends ServiceImpl<RoleDao, RoleEntity> implements
     @Autowired
     ShiroUtils shiroUtils;
 
+    @Autowired
+    RoleMenuService roleMenuService;
+
+    @Autowired
+    private RoleMenuDao roleMenuDao;
     private static List<Integer> allChildRolesIds = new ArrayList<Integer>();
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -80,24 +90,52 @@ public class RoleServiceImpl extends ServiceImpl<RoleDao, RoleEntity> implements
     }
 
     @Override
+    @Transactional(rollbackFor = RRException.class)
     public boolean save(RoleEntity roleEntity){
         roleEntity.setCreateId(Constant.currentId);
         roleEntity.setCreateTime(new Date());
+        for(Integer menuId : roleEntity.getMenuIds()){
+            RoleMenuEntity roleMenuEntity = new RoleMenuEntity();
+            roleMenuEntity.setRoleId(roleEntity.getId());
+            roleMenuEntity.setMenuId(menuId);
+            roleMenuDao.insert(roleMenuEntity);
+        }
         return this.retBool(this.baseMapper.insert(roleEntity));
     }
 
     @Override
     public RoleEntity getById(Integer id){
 
+
         RoleEntity roleEntity = this.baseMapper.selectById(id);
-        if(roleEntity.getParentId() == 0){
-            roleEntity.setParentName("");
-        }else{
-            roleEntity.setParentName(this.baseMapper.selectById(roleEntity.getParentId()).getName());
+
+        if(roleEntity != null){
+            if(roleEntity.getParentId() == 0){
+                roleEntity.setParentName("");
+            }else{
+                roleEntity.setParentName(this.baseMapper.selectById(roleEntity.getParentId()).getName());
+            }
+
         }
 
 
         return roleEntity;
+    }
+
+    @Override
+    @Transactional(rollbackFor = RRException.class)
+    public boolean updateById(RoleEntity roleEntity){
+
+        roleMenuService.removeById(roleEntity.getId());
+        List<RoleMenuEntity> roleMenuEntities = new ArrayList<>();
+        for(Integer menuId : roleEntity.getMenuIds()){
+            RoleMenuEntity roleMenuEntity = new RoleMenuEntity();
+            roleMenuEntity.setRoleId(roleEntity.getId());
+            roleMenuEntity.setMenuId(menuId);
+            roleMenuEntities.add(roleMenuEntity);
+            roleMenuDao.insert(roleMenuEntity);
+        }
+        return true;
     }
 
     public void getChildRoles(Integer roleId){
