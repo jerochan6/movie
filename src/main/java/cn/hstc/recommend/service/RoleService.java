@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import cn.hstc.recommend.utils.PageUtils;
 import cn.hstc.recommend.entity.RoleEntity;
 
+import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -22,5 +24,7 @@ public interface RoleService extends IService<RoleEntity> {
 
     @Override
     boolean updateById(RoleEntity roleEntity);
+
+    boolean removeByIds(List<Integer> idList);
 }
 

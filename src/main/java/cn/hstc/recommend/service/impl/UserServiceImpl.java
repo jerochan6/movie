@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -20,6 +21,7 @@ import cn.hstc.recommend.dao.UserDao;
 import cn.hstc.recommend.entity.UserEntity;
 import cn.hstc.recommend.service.UserService;
 import org.springframework.transaction.annotation.Transactional;
+import sun.security.provider.MD5;
 
 
 @Service("userService")
@@ -122,13 +124,6 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
 
     @Override
     public boolean save(UserEntity userEntity) {
-        List<UserRoleEntity> userRoleEntities = new ArrayList<>();
-        for(Integer roleId : userEntity.getRoleIds()){
-            UserRoleEntity userRoleEntity = new UserRoleEntity();
-            userRoleEntity.setUserId(userEntity.getId());
-            userRoleEntity.setRoleId(roleId);
-        }
-        userRoleService.saveOrUpdateBatch(userRoleEntities);
         //设置创建时间
         userEntity.setCreateTime(new Date());
         //验证格式
@@ -139,9 +134,17 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
         }
         //获取sha256加密后的user
         UserEntity shiroUser = ShiroUtils.getShiroUser(userEntity);
+        this.baseMapper.insert(shiroUser);
 
+        List<UserRoleEntity> userRoleEntities = new ArrayList<>();
+        for(Integer roleId : userEntity.getRoleIds()){
+            UserRoleEntity userRoleEntity = new UserRoleEntity();
+            userRoleEntity.setUserId(this.getOne(new QueryWrapper<UserEntity>().eq("user_name",userEntity.getUserName())).getId());
+            userRoleEntity.setRoleId(roleId);
+            userRoleEntities.add(userRoleEntity);
+        }
 
-        return this.retBool(this.baseMapper.insert(shiroUser));
+        return userRoleService.saveBatch(userRoleEntities);
     }
 
     private String REXValidate(UserEntity userEntity) {

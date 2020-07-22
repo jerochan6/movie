@@ -44,7 +44,7 @@ public class MenuController {
     public Result list(@RequestParam Map<String, Object> params){
         if(Constant.currentId != Constant.SUPER_ADMIN){
             List<Integer> menuIds = userService.getAllPermsIds(Constant.currentId);
-            if(menuIds == null){
+            if(menuIds.size() == 0){
                 return new Result().ok(null);
             }
             List<MenuEntity> menuEntities = menuService.list(new QueryWrapper<MenuEntity>()

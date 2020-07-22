@@ -61,3 +61,14 @@ redis:
   expire:
     common: 86400 # 24小时
   open: false  # 是否开启redis缓存  true开启   false关闭
+
+#上传的文件服务器
+fileserver:
+  image:      #配置图片外网服务器
+    address: 192.168.32.134
+    httpPort: 80
+    ftpPort: 21
+    imagePath: upload/imgs/
+    rootPath: /home/imageuser/movie_images/static/
+    account: imageuser
+    password: 123456

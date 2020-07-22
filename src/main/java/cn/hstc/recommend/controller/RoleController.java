@@ -80,6 +80,7 @@ public class RoleController {
      */
     @RequestMapping("/delete")
     public Result delete(@RequestBody Integer[] ids){
+
         roleService.removeByIds(Arrays.asList(ids));
 
         return new Result().ok("删除成功");

@@ -94,13 +94,15 @@ public class RoleServiceImpl extends ServiceImpl<RoleDao, RoleEntity> implements
     public boolean save(RoleEntity roleEntity){
         roleEntity.setCreateId(Constant.currentId);
         roleEntity.setCreateTime(new Date());
+        this.baseMapper.insert(roleEntity);
+        List<RoleMenuEntity> roleMenuEntities = new ArrayList<>();
         for(Integer menuId : roleEntity.getMenuIds()){
             RoleMenuEntity roleMenuEntity = new RoleMenuEntity();
             roleMenuEntity.setRoleId(roleEntity.getId());
             roleMenuEntity.setMenuId(menuId);
-            roleMenuDao.insert(roleMenuEntity);
+            roleMenuEntities.add(roleMenuEntity);
         }
-        return this.retBool(this.baseMapper.insert(roleEntity));
+        return roleMenuService.saveBatch(roleMenuEntities);
     }
 
     @Override
@@ -136,6 +138,22 @@ public class RoleServiceImpl extends ServiceImpl<RoleDao, RoleEntity> implements
             roleMenuDao.insert(roleMenuEntity);
         }
         return true;
+    }
+
+    @Override
+    public boolean removeByIds(List<Integer> idList) {
+//        if(idList == null){
+//            return true;
+//        }
+//
+//        for(Integer roleId : idList){
+//
+//
+//            this.remove(new QueryWrapper<RoleEntity>().eq("parent_id",roleId));
+//
+//        }
+
+        return  this.retBool(this.baseMapper.deleteBatchIds(idList));
     }
 
     public void getChildRoles(Integer roleId){

@@ -9,11 +9,13 @@ import java.util.UUID;
 
 import cn.hstc.recommend.interceptor.PassToken;
 import cn.hstc.recommend.interceptor.UserAdminToken;
+import cn.hstc.recommend.service.UploadService;
 import cn.hstc.recommend.utils.*;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.swagger.annotations.Api;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,12 +41,18 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 @RequestMapping("movie")
 public class MovieController {
+    @Value("${fileserver.image.imagePath}")
+    private String IMAGE_SERVER_IMAGEPATH;
+
 
     private MovieService movieService;
 
+    private UploadService uploadService;
+
     @Autowired
-    MovieController(MovieService movieService){
+    MovieController(MovieService movieService,UploadService uploadService){
         this.movieService = movieService;
+        this.uploadService = uploadService;
     }
 
     /**
@@ -118,27 +126,34 @@ public class MovieController {
     @RequestMapping(value = "/imgUpload")
     public Result imgUpload(@RequestBody MultipartFile file,HttpServletRequest request){
 
-        String parentDir = request.getServletContext().getRealPath("/");
-        if (file.isEmpty()) {
-           return new Result().error("上传图片为空");
-        }
-        // 获取文件名
-        String fileName = file.getOriginalFilename();
-        // 上传后的路径
-        File filePath = UploadUtils.getImgDirFile(parentDir);
+//        String parentDir = request.getServletContext().getRealPath("/");
+//        if (file.isEmpty()) {
+//           return new Result().error("上传图片为空");
+//        }
+//        // 获取文件名
+//        String fileName = file.getOriginalFilename();
+//        // 上传后的路径
+//        File filePath = UploadUtils.getImgDirFile(parentDir);
+//        // 生成新文件名
+//        fileName = UploadUtils.getUUIDName(fileName);
+//        File dest = new File(filePath + "/" + fileName);
+//        if (!dest.getParentFile().exists()) {
+//            dest.getParentFile().mkdirs();
+//        }
+//        try {
+//            file.transferTo(dest);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        System.out.println(filePath + "/" + fileName);
+
+        // 获取原始文件名
+        String oldName = file.getOriginalFilename();
         // 生成新文件名
-        fileName = UploadUtils.getUUIDName(fileName);
-        File dest = new File(filePath + "/" + fileName);
-        if (!dest.getParentFile().exists()) {
-            dest.getParentFile().mkdirs();
-        }
-        try {
-            file.transferTo(dest);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        System.out.println(filePath + "/" + fileName);
-        return new Result().ok(UploadUtils.IMG_PATH_PREFIX+"/"+fileName);
+        String fileName = UploadUtils.getUUIDName(oldName);
+        uploadService.uploadImg(file,fileName);
+
+        return new Result().ok(IMAGE_SERVER_IMAGEPATH+fileName);
     }
 
 

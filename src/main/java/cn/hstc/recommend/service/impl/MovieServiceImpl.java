@@ -45,6 +45,8 @@ public class MovieServiceImpl extends ServiceImpl<MovieDao, MovieEntity> impleme
     private String REDIS_KEY_MOVIE;
     @Value("${redis.key.movieResourceList}")
     private String REDIS_KEY_RESOURCE_LIST;
+    @Value("${redis.open}")
+    private Boolean isRedisOpen;
 
     @Autowired
     MovieServiceImpl(TagService tagService, CommentService commentService
@@ -63,9 +65,12 @@ public class MovieServiceImpl extends ServiceImpl<MovieDao, MovieEntity> impleme
         StringBuilder key = new StringBuilder(REDIS_DATABASE + ":" +
                 REDIS_KEY_MOVIE + ":" + REDIS_KEY_RESOURCE_LIST + ":" + params.hashCode());
         //查找redis是否已存在该查询缓存
-        if (redisService.get(key.toString()) != null) {
-            return new PageUtils((IPage<MovieEntity>) redisService.get(key.toString()));
+        if(isRedisOpen){
+            if (redisService.get(key.toString()) != null) {
+                return new PageUtils((IPage<MovieEntity>) redisService.get(key.toString()));
+            }
         }
+
 
         wrapper.apply("1=1");
         //根据类型查电影
@@ -116,7 +121,10 @@ public class MovieServiceImpl extends ServiceImpl<MovieDao, MovieEntity> impleme
         page.setRecords(movieDao.selectListPage(page.offset(), page.getSize(), wrapper));
         List<MovieEntity> movieEntities = page.getRecords();
         insertColumnName(movieEntities);
-        redisService.set(key.toString(), page, REDIS_EXPIRE);
+        if(isRedisOpen){
+            redisService.set(key.toString(), page, REDIS_EXPIRE);
+        }
+
 //        //根据热度排序
 //        if(params.get("orderBy") != null){
 //            String orderBy = (String) params.get("orderBy");
@@ -234,8 +242,11 @@ public class MovieServiceImpl extends ServiceImpl<MovieDao, MovieEntity> impleme
                 }
             }
         }
-        //删除缓存中的数据
-        redisService.delKeys(this.getMatchRedisPreKey());
+        if(isRedisOpen){
+            //删除缓存中的数据
+            redisService.delKeys(this.getMatchRedisPreKey());
+
+        }
 
 
         //删除电影记录
@@ -252,8 +263,11 @@ public class MovieServiceImpl extends ServiceImpl<MovieDao, MovieEntity> impleme
     @Override
     public boolean save(MovieEntity movieEntity) {
         movieEntity.setCreateTime(new Date());
-        //删除缓存中的数据
-        redisService.delKeys(this.getMatchRedisPreKey());
+        if(isRedisOpen){
+            //删除缓存中的数据
+            redisService.delKeys(this.getMatchRedisPreKey());
+        }
+
         return this.retBool(this.baseMapper.insert(movieEntity));
     }
 
@@ -265,8 +279,11 @@ public class MovieServiceImpl extends ServiceImpl<MovieDao, MovieEntity> impleme
         if (movieEntity.getLanguage().isEmpty()) {
             movieEntity.setLanguage(null);
         }
-        //删除缓存中的数据
-        redisService.delKeys(this.getMatchRedisPreKey());
+        if(isRedisOpen){
+            //删除缓存中的数据
+            redisService.delKeys(this.getMatchRedisPreKey());
+        }
+
 
         return this.retBool(this.baseMapper.updateById(movieEntity));
     }

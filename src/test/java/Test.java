@@ -1,5 +1,6 @@
 import cn.hstc.recommend.MovieApplication;
 import com.alibaba.druid.pool.DruidDataSource;
+import org.apache.commons.net.ftp.FTPClient;
 import org.apache.mahout.cf.taste.common.TasteException;
 import org.apache.mahout.cf.taste.impl.common.FastByIDMap;
 import org.apache.mahout.cf.taste.impl.model.GenericDataModel;
@@ -34,7 +35,6 @@ import java.util.List;
 public class Test {
 
     public static void main(String[] args) throws Exception {
-
 //        FastByIDMap<PreferenceArray> preferences = new FastByIDMap<PreferenceArray>();
 //
 //        PreferenceArray prefsForUser1 = new GenericUserPreferenceArray(3);// 注意这里的数字
