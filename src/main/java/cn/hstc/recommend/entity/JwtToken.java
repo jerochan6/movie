@@ -1,4 +1,4 @@
-package cn.hstc.recommend.service.impl;
+package cn.hstc.recommend.entity;
 
 import org.apache.shiro.authc.AuthenticationToken;
 

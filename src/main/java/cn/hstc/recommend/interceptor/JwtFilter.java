@@ -1,26 +1,17 @@
 package cn.hstc.recommend.interceptor;
 
 import cn.hstc.recommend.entity.UserEntity;
-import cn.hstc.recommend.service.impl.JwtToken;
+import cn.hstc.recommend.entity.JwtToken;
 import cn.hstc.recommend.utils.Constant;
-import cn.hstc.recommend.utils.ShiroUtils;
 import cn.hstc.recommend.utils.TokenHelp;
-import cn.hstc.recommend.utils.UserRealm;
-import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.subject.Subject;
-import org.apache.shiro.util.AntPathMatcher;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * @ClassName JwtFilter
