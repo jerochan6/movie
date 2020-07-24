@@ -67,13 +67,10 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
         if (null == userEntity) {
             return new Result().error("该账号未注册，请进行注册！");
         }
-
-        //我的密码是使用uuid作为盐值加密的，所以这里登陆时候还需要做一次对比
-        SimpleHash simpleHash = new SimpleHash("MD5", password,  userEntity.getSalt(),
-                Constant.HASHINTERATIONS);
-        if(!simpleHash.toHex().equals(userEntity.getPassword())){
-            return new Result().error("密码不正确");
+        if(!ShiroUtils.validAccount(userEntity,password)){
+            return new Result().error("密码有误！");
         }
+
         String token = tokenHelp.getToken(userEntity);
         Result result = new Result<>();
         Map<String, Object> map = new HashMap<String, Object>();

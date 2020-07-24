@@ -51,7 +51,7 @@ public class Constant {
 
     public static final String ACESSTOKEN = "token";
 
-    public static final int HASHINTERATIONS = 1;
+
     /**
      * 手机号码正则
      **/

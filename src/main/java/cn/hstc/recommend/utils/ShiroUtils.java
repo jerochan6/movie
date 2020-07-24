@@ -39,8 +39,8 @@ public class ShiroUtils {
     public final static String hashAlgorithmName = "SHA-256";
     /**  循环次数 */
     public final static int hashIterations = 16;
-
-
+    public static final int HASHINTERATIONS = 1;
+    public final static String ENCRYPTION = "MD5";
 
 
     public static String sha256(String password, String salt) {
@@ -94,9 +94,17 @@ public class ShiroUtils {
         return kaptcha.toString();
     }
 
+    public static boolean validAccount(UserEntity userEntity,String password){
+
+        //我的密码是使用uuid作为盐值加密的，所以这里登陆时候还需要做一次对比
+        SimpleHash simpleHash = new SimpleHash(ENCRYPTION, password, userEntity.getSalt(),
+                HASHINTERATIONS);
+        return simpleHash.toHex().equals(userEntity.getPassword());
+    }
+
     public static UserEntity getShiroUser( UserEntity userEntity){
         String salt = UUID.randomUUID().toString().replaceAll("-","");
-        SimpleHash simpleHash = new SimpleHash("MD5", userEntity.getPassword(), salt, Constant.HASHINTERATIONS);
+        SimpleHash simpleHash = new SimpleHash(ENCRYPTION, userEntity.getPassword(), salt,HASHINTERATIONS);
         userEntity.setPassword(simpleHash.toHex());
         userEntity.setSalt(salt);
         return userEntity;

@@ -221,27 +221,27 @@ public class MovieServiceImpl extends ServiceImpl<MovieDao, MovieEntity> impleme
     public boolean removeByIds(Collection<? extends Serializable> idList, String path) {
         //根据电影id获得电影
         List<MovieEntity> list = this.baseMapper.selectBatchIds(idList);
-        //遍历电影集合，如果电影的图片不为空，则图片在本地中s物理删除
-        for (MovieEntity movie :
-                list) {
-
-            if (null != movie.getMovieImage()) {
-                // 上传后的路径
-                String dirPath = path + UploadUtils.STATIC_PATH;
-                //根据图片存储路径获取图片
-                File image = new File(dirPath + movie.getMovieImage());
-
-                //如果图片存在，则删除
-                if (image.exists()) {
-                    try {
-                        image.delete();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        return false;
-                    }
-                }
-            }
-        }
+//        //遍历电影集合，如果电影的图片不为空，则图片在本地中s物理删除
+//        for (MovieEntity movie :
+//                list) {
+//
+//            if (null != movie.getMovieImage()) {
+//                // 上传后的路径
+////                String dirPath = path + UploadUtils.STATIC_PATH;
+//                //根据图片存储路径获取图片
+//                File image = new File(dirPath + movie.getMovieImage());
+//
+//                //如果图片存在，则删除
+//                if (image.exists()) {
+//                    try {
+//                        image.delete();
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                        return false;
+//                    }
+//                }
+//            }
+//        }
         if(isRedisOpen){
             //删除缓存中的数据
             redisService.delKeys(this.getMatchRedisPreKey());
